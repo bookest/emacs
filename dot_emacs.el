@@ -841,7 +841,7 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vc
-(add-to-list 'vc-handled-backends 'DARCS) ;setup vc-darcs
+;(add-to-list 'vc-handled-backends 'DARCS) ;setup vc-darcs
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ediff
