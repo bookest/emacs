@@ -398,6 +398,14 @@ The current selected frame is moved if FRAME is NIL."
   "__END__\n")
 (define-auto-insert 'cperl-mode 'perl-script-skeleton t)
 
+(autoload 'perl-lint "perl-lint-mode" nil t)
+(autoload 'perl-lint-mode "perl-lint-mode" nil t)
+(autoload 'perltidy "perltidy-mode" nil t)
+(autoload 'perltidy-mode "perltidy-mode" nil t)
+
+(autoload 'sepia-init "sepia" nil t)
+(defalias 'run-perl 'sepia-init)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tt-mode
 (autoload 'tt-mode "tt-mode")
@@ -508,10 +516,12 @@ Checks if unsaved buffers need to be saved."
      (defun cjg-python-electric-dot (n)
        (interactive "p")
        (let ((prev (char-before)))
-	 (when (not (or (null prev)
-			(python-in-string/comment)
-			(equal (char-syntax prev) ?w)))
-	   (insert "self")))
+         (when (not (or (null prev)
+                        (python-in-string/comment)
+                        (equal (char-syntax prev) ?w)
+                        (equal (char-syntax prev) ?\")))
+                               
+           (insert "self")))
        (self-insert-command n))
      
      (modify-syntax-entry ?_ "w" python-mode-syntax-table)
@@ -905,6 +915,15 @@ is closer to GNU basename."
 ;;; css-mode-simple
 (add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
 (autoload 'css-mode "css-mode-simple" nil t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mouse-avoidance-mode
+(when (display-mouse-p)
+  (defun mouse-avoidance-banish-destination ()
+    (let ((edges (window-edges)))
+      (cons (nth 2 edges)
+            (nth 3 edges))))
+  (mouse-avoidance-mode 'banish))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; work and homebrew modes
