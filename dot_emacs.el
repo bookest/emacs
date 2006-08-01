@@ -45,7 +45,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general predicates
-;(defmacro define-location-predicate (name regex)
 
 (defmacro cjg-define-domain-predicate (name re)
   "Defines a predicate that returns true if `system-name' matches RE.
