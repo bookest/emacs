@@ -77,17 +77,24 @@ NAME converted to lowercase."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
-(column-number-mode t)
-(line-number-mode t)
 
-(defun cjg-toggle-off (&rest lst)
+(defun cjg-toggle (arg lst)
   (dolist (fn lst)
     (when (fboundp fn)
-      (funcall fn -1))))
+      (funcall fn arg))))
 
-(cjg-toggle-off 'scroll-bar-mode
-                'tool-bar-mode
-                'menu-bar-mode)
+(defun cjg-turn-off (&rest lst)
+  (cjg-toggle -1 lst))
+(defun cjg-turn-on (&rest lst)
+  (cjg-toggle 1 lst))
+
+(cjg-turn-on 'column-number-mode
+             'line-number-mode
+             'show-paren-mode)
+
+(cjg-turn-off 'scroll-bar-mode
+              'tool-bar-mode
+              'menu-bar-mode)
 
 (display-time)
 
