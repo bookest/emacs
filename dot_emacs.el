@@ -1,4 +1,4 @@
-;;; .emacs -- emacs customizations -*- Mode: emacs-lisp; auto-recompile: t; -*-
+;;; dot_emacs.el -- Emacs customizations 
 ;;
 ;; Author: Chris Grim
 ;;
