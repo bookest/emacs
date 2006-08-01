@@ -47,23 +47,24 @@
 ;;; general predicates
 ;(defmacro define-location-predicate (name regex)
 
-(defun at-ncbi-p ()
-  "Returns true if running Emacs at NCBI."
-  (save-match-data
-    (if (string-match "\\.ncbi\\.nlm\\.nih\\.gov$" (system-name))
-	t
-      nil)))
+(defmacro cjg-define-domain-predicate (name re)
+  "Defines a predicate that returns true if `system-name' matches RE.
 
-(defun at-nyu-p ()
-  "Returns true if running Emacs at NYU."
-  (save-match-data
-    (if (string-match "\\.nyu\\.edu$" (system-name))
-	t
-      nil)))
+The predicate will be called cjg-at-LCNAME-p. Where LCNAME is
+NAME converted to lowercase."
+  `(defun ,(intern (concat "cjg-at-" (downcase name) "-p")) ()
+     ,(concat "Returns true if running Emacs at " name ".")
+     (save-match-data
+       (if (string-match ,re (system-name))
+           t
+         nil))))
 
-(defalias 'at-work-p 'at-nyu-p)
+(cjg-define-domain-predicate "NCBI" "\\.ncbi\\.nlm\\.nih\\.gov$")
+(cjg-define-domain-predicate "NYU" "\\.nyu\\.edu")
 
-(defun cjg:at-home-p ()
+(defalias 'at-work-p 'cjg-at-nyu-p)
+
+(defun cjg-at-home-p ()
   "Returns true if running Emacs at home."
   (not (at-work-p)))
 
@@ -79,11 +80,17 @@
 ;;; general config
 (column-number-mode t)
 (line-number-mode t)
-(scroll-bar-mode -1) 			;no scrollbar
-(tool-bar-mode -1)			;no toolbar
-(menu-bar-mode -1)			;no menubar
-(show-paren-mode 1)
-(display-time) 
+
+(defun cjg-toggle-off (&rest lst)
+  (dolist (fn lst)
+    (when (fboundp fn)
+      (funcall fn -1))))
+
+(cjg-toggle-off 'scroll-bar-mode
+                'tool-bar-mode
+                'menu-bar-mode)
+
+(display-time)
 
 (setq visible-bell t			
       inhibit-startup-message t
@@ -117,31 +124,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; global keybindings
-(global-set-key (kbd "%")       'cjg-match-paren)
-(global-set-key (kbd "C-c o")   'occur)
-(global-set-key (kbd "C-c g")   'goto-line)
-(global-set-key (kbd "C-c #")   'comment-region)
-(global-set-key (kbd "C-c $")   'uncomment-region)
-(global-set-key (kbd "C-c t")   'todo-show)
-(global-set-key (kbd "C-c i")   'todo-insert-item)
-(global-set-key (kbd "C-c cc")  'compile)
-(global-set-key (kbd "C-x C-b") 'cjg-buffer-list)
-(global-set-key (kbd "RET")     'newline-and-indent)
-(global-set-key (kbd "C-x C-m") 'execute-extended-command) ; duplicate M-x
 
-;; (defvar *cjg-key-bindings*
-;;   '(("%"       'cjg-match-paren)
-;;     ("C-c o"   'occur)
-;;     ("C-c g"   'goto-line)
-;;     ("C-c #"   'comment-region)
-;;     ("C-c $"   'uncomment-region)
-;;     ("C-c t"   'todo-show)
-;;     ("C-c i"   'todo-insert-item)
-;;     ("C-c cc"  'compile)
-;;     ("C-x C-b" 'cjg-buffer-list)))
+(defmacro cjg-define-global-keys (&rest bindings)
+  "Define one or more keybindings in the global map."
+  `(cjg-define-keys (current-global-map) ,@bindings))
+(put 'cjg-define-global-keys 'lisp-indent-function 1)
 
-;; (dolist (key *cjg-key-bindings*)
-;;   (global-set-key (kbd (car key)) (cadr key)))
+(defmacro cjg-define-keys (map &rest bindings)
+  "Define one or more key bindings in MAP."
+  ;;FIXME: keymap should be an uninterned tempvar to avoid name conflict.
+  (let ((keymap map))
+    `(progn
+       ,@(mapcar (lambda (elt)
+                   `(define-key ,keymap (kbd ,(car elt)) ,(cdr elt)))
+                 bindings))))
+(put 'cjg-define-keys 'lisp-indent-function 1)
+
+(cjg-define-global-keys
+  ("%" . 'cjg-match-paren)
+  ("C-c o" .  'occur)
+  ("C-c g" . 'goto-line)
+  ("C-c #" . 'comment-region)
+  ("C-c $" . 'uncomment-region)
+  ("C-c t" . 'todo-show)
+  ("C-c i" . 'todo-insert-item)
+  ("C-c cc" . 'compile)
+  ("C-x C-b" . 'cjg-buffer-list)
+  ("RET" . 'newline-and-indent)
+  ("C-x C-m" . 'execute-extended-command))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general functions
@@ -307,7 +317,12 @@ The current selected frame is moved if FRAME is NIL."
 ;;; compile-mode
 (require 'compile)
 
-(defmacro def-compile-command (name &rest body)
+(defmacro cjg-define-compile-command (name &rest body)
+  "Define NAME as a function that sets COMPILE-COMMAND.
+
+COMPILE-COMMAND is set to the results of evaluating
+BODY. COMPILE-COMMAND will be the default if a file named
+Makefile or makefile exist in the current directory."
   `(defun ,name ()
      (unless (or (null buffer-file-name)
 		 (file-exists-p "Makefile")
@@ -315,6 +330,7 @@ The current selected frame is moved if FRAME is NIL."
        (set (make-local-variable 'compile-command) 
 	    (progn ,@body)))))
 
+(put 'cjg-define-compile-command 'lisp-indent-function 1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; font-lock-mode
 (require 'font-lock)
@@ -343,7 +359,7 @@ The current selected frame is moved if FRAME is NIL."
        (define-abbrev cperl-mode-abbrev-table "__d" "__DATA__")
        (define-abbrev cperl-mode-abbrev-table "__e" "__END__"))))
 
-(def-compile-command cjg:cperl-set-compile-command
+(cjg-define-compile-command cjg:cperl-set-compile-command
   (concat "perl -cw " 
 	  (file-name-nondirectory buffer-file-name)))
 
@@ -420,14 +436,15 @@ The current selected frame is moved if FRAME is NIL."
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
 ;; these are from cliki:EditingLispCodeWithEmacs
-(define-key emacs-lisp-mode-map (kbd "C-t") 'transpose-sexps)
-(define-key emacs-lisp-mode-map (kbd "C-M-t") 'transpose-chars)
-(define-key emacs-lisp-mode-map (kbd "C-b") 'backward-sexp)
-(define-key emacs-lisp-mode-map (kbd "C-M-b") 'backward-char)
-(define-key emacs-lisp-mode-map (kbd "C-f") 'forward-sexp)
-(define-key emacs-lisp-mode-map (kbd "C-M-f") 'forward-char)
-(define-key emacs-lisp-mode-map (kbd "(") 'insert-parentheses)
-(define-key emacs-lisp-mode-map (kbd ")") 'move-past-close-and-reindent)
+(cjg-define-keys emacs-lisp-mode-map
+  ("C-t" . 'transpose-sexps)
+  ("C-M-t" . 'transpose-chars)
+  ("C-b" . 'backward-sexp)
+  ("C-M-b" . 'backward-char)
+  ("C-f" . 'forward-sexp)
+  ("C-M-f" . 'forward-char)
+  ("(" . 'insert-parentheses)
+  (")" . 'move-past-close-and-reindent))
 
 (defun cjg-unintern-symbol-at-point ()
   "Unintern the symbol at point."
@@ -441,7 +458,7 @@ The current selected frame is moved if FRAME is NIL."
 ;;; sh-mode
 (setq sh-basic-offset 4)
 
-(def-compile-command cjg:sh-set-compile-command
+(cjg-define-compile-command cjg:sh-set-compile-command
   (concat "bash -n "
 	  (file-name-nondirectory buffer-file-name)))
 
@@ -451,7 +468,7 @@ The current selected frame is moved if FRAME is NIL."
 ;;; C-mode
 (setq c-basic-offset 8)
 
-(def-compile-command cjg:c-set-compile-command
+(cjg-define-compile-command cjg:c-set-compile-command
   (let ((file (file-name-nondirectory buffer-file-name)))
     (concat "gcc -g -Wall -o " 
 	    (file-name-sans-extension file)
@@ -463,7 +480,7 @@ The current selected frame is moved if FRAME is NIL."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C++-mode
 
-(def-compile-command cjg:c++-set-compile-command
+(cjg-define-compile-command cjg:c++-set-compile-command
   (let ((file (file-name-nondirectory buffer-file-name)))
     (concat "g++ -g -Wall -o " 
 	    (file-name-sans-extension file)
@@ -488,8 +505,8 @@ The current selected frame is moved if FRAME is NIL."
      (defun cjg-ruby-mode-setup ()
        (ruby-electric-mode 1))
      
-     (define-key ruby-mode-map (kbd "RET")
-       'ruby-reindent-then-newline-and-indent)
+     (cjg-define-keys ruby-mode-map
+       ("RET" . 'ruby-reindent-then-newline-and-indent))
      
      (inf-ruby-keys)
      (add-hook 'ruby-mode-hook 'cjg-ruby-mode-setup)))
@@ -525,14 +542,15 @@ Checks if unsaved buffers need to be saved."
        (self-insert-command n))
      
      (modify-syntax-entry ?_ "w" python-mode-syntax-table)
-     
-     (define-key python-mode-map "." 'cjg-python-electric-dot)
-     (define-key python-mode-map "\"" 'cjg-electric-pair)
-     (define-key python-mode-map "\'" 'cjg-electric-pair)
-     (define-key python-mode-map "(" 'cjg-electric-pair)
-     (define-key python-mode-map "[" 'cjg-electric-pair)
-     (define-key python-mode-map "{" 'cjg-electric-pair)
-     (define-key python-mode-map "," 'cjg-trailing-space)
+
+     (cjg-define-keys python-mode-map
+       ("." . 'cjg-python-electric-dot)
+       ("\"" . 'cjg-electric-pair)
+       ("\'" . 'cjg-electric-pair)
+       ("(" . 'cjg-electric-pair)
+       ("[" . 'cjg-electric-pair)
+       ("{" . 'cjg-electric-pair)
+       ("," . 'cjg-trailing-space))
      
      (define-abbrev python-mode-abbrev-table "__i" "__init__")
      (define-abbrev python-mode-abbrev-table "__m" "__main__")
@@ -884,10 +902,11 @@ is closer to GNU basename."
 ;;; itunes
 (eval-after-load "itunes"
   '(progn
-     (global-set-key (kbd "C-x 5n") 'cjg-itunes-next-track)
-     (global-set-key (kbd "C-x 5p") 'cjg-itunes-previous-track)
-     (global-set-key (kbd "C-x 5s") 'cjg-itunes-stop)
-     (global-set-key (kbd "C-x 5l") 'cjg-itunes-play)))
+     (cjg-define-global-keys
+       ("C-x 5n" . 'cjg-itunes-next-track)
+       ("C-x 5p" . 'cjg-itunes-previous-track)
+       ("C-x 5s" . 'cjg-itunes-stop)
+       ("C-x 5l" . 'cjg-itunes-play))))
 
 (when (fboundp 'do-applescript)
   (autoload 'cjg5-itunes-next-track "itunes" nil t)
