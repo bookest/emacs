@@ -549,14 +549,17 @@ Checks if unsaved buffers need to be saved."
      
      (modify-syntax-entry ?_ "w" python-mode-syntax-table)
 
+     (font-lock-add-keywords 'python-mode
+                             '(("\\<\\(self\\)\\>" 1 'italic)))
+     
      (cjg-define-keys python-mode-map
-       ("." . 'cjg-python-electric-dot)
+       ("."  . 'cjg-python-electric-dot)
        ("\"" . 'cjg-electric-pair)
        ("\'" . 'cjg-electric-pair)
-       ("(" . 'cjg-electric-pair)
-       ("[" . 'cjg-electric-pair)
-       ("{" . 'cjg-electric-pair)
-       ("," . 'cjg-trailing-space))
+       ("("  . 'cjg-electric-pair)
+       ("["  . 'cjg-electric-pair)
+       ("{"  . 'cjg-electric-pair)
+       (","  . 'cjg-insert-trailing-space))
      
      (define-abbrev python-mode-abbrev-table "__i" "__init__")
      (define-abbrev python-mode-abbrev-table "__m" "__main__")
