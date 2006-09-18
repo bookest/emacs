@@ -265,6 +265,15 @@ Stolen and modified from the original version found at
            (set-visited-file-name new-name)
            (set-buffer-modified-p nil)))))
 
+(defmacro cjg-define-abbrevs (abbrev-table &rest abbrevs)
+  "Define one or more abbreviations."
+  (let ((table abbrev-table))
+    `(progn
+       ,@(mapcar (lambda (elt)
+                   `(define-abbrev ,table ,@elt))
+                 abbrevs))))
+(put 'cjg-define-abbrevs 'lisp-indent-function 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; window and frame manipulations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -361,9 +370,10 @@ Makefile or makefile exist in the current directory."
 	   cperl-under-as-char t
 	   cperl-indent-level 2)
      (when (not (null cperl-mode-abbrev-table))
-       (define-abbrev cperl-mode-abbrev-table "__p" "__PACKAGE__")
-       (define-abbrev cperl-mode-abbrev-table "__d" "__DATA__")
-       (define-abbrev cperl-mode-abbrev-table "__e" "__END__"))))
+       (cjg-define-abbrevs cperl-mode-abbrev-table
+         ("__p" "__PACKAGE__")
+         ("__d" "__DATA__")
+         ("__e" "__END__")))))
 
 (cjg-define-compile-command cjg:cperl-set-compile-command
   (concat "perl -cw " 
@@ -543,7 +553,6 @@ Checks if unsaved buffers need to be saved."
                         (python-in-string/comment)
                         (equal (char-syntax prev) ?w)
                         (equal (char-syntax prev) ?\")))
-                               
            (insert "self")))
        (self-insert-command n))
      
@@ -571,14 +580,15 @@ Checks if unsaved buffers need to be saved."
        nil
        "class " _ ":")
 
-     (define-abbrev python-mode-abbrev-table "def" "" 'python-def-skeleton)
-     (define-abbrev python-mode-abbrev-table "class" "" 'python-class-skeleton)
-     (define-abbrev python-mode-abbrev-table "__i" "__init__")
-     (define-abbrev python-mode-abbrev-table "__m" "__main__")
-     (define-abbrev python-mode-abbrev-table "__v" "__version__")
-     (define-abbrev python-mode-abbrev-table "__s" "__str__")
-     (define-abbrev python-mode-abbrev-table "__n" "__name__")
-     (define-abbrev python-mode-abbrev-table "__m" "__main__")     
+     (cjg-define-abbrevs python-mode-abbrev-table
+       ("def" "" 'python-def-skeleton)
+       ("class" "" 'python-class-skeleton)
+       ("__i" "__init__")
+       ("__m" "__main__")
+       ("__v" "__version__")
+       ("__s" "__str__")
+       ("__n" "__name__")
+       ("__m" "__main__"))
      
      (add-hook 'python-mode-hook 'cjg-python-mode-setup)))
 
