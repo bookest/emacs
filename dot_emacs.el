@@ -83,18 +83,18 @@ NAME converted to lowercase."
     (when (fboundp fn)
       (funcall fn arg))))
 
-(defun cjg-turn-off (&rest lst)
+(defun cjg-disable (&rest lst)
   (cjg-toggle -1 lst))
-(defun cjg-turn-on (&rest lst)
+(defun cjg-enable (&rest lst)
   (cjg-toggle 1 lst))
 
-(cjg-turn-on 'column-number-mode
-             'line-number-mode
-             'show-paren-mode)
+(cjg-enable 'column-number-mode
+            'line-number-mode
+            'show-paren-mode)
 
-(cjg-turn-off 'scroll-bar-mode
-              'tool-bar-mode
-              'menu-bar-mode)
+(cjg-disable 'scroll-bar-mode
+             'tool-bar-mode
+             'menu-bar-mode)
 
 (display-time)
 
