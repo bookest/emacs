@@ -560,7 +560,19 @@ Checks if unsaved buffers need to be saved."
        ("["  . 'cjg-electric-pair)
        ("{"  . 'cjg-electric-pair)
        (","  . 'cjg-insert-trailing-space))
+
+     (define-skeleton python-def-skeleton
+       "Insert a def statement."
+       nil
+       "def " _ "():")
      
+     (define-skeleton python-class-skeleton
+       "Insert a class definition."
+       nil
+       "class " _ ":")
+
+     (define-abbrev python-mode-abbrev-table "def" "" 'python-def-skeleton)
+     (define-abbrev python-mode-abbrev-table "class" "" 'python-class-skeleton)
      (define-abbrev python-mode-abbrev-table "__i" "__init__")
      (define-abbrev python-mode-abbrev-table "__m" "__main__")
      (define-abbrev python-mode-abbrev-table "__v" "__version__")
