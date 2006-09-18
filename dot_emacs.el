@@ -434,9 +434,17 @@ Makefile or makefile exist in the current directory."
 (autoload 'perl-lint-mode "perl-lint-mode" nil t)
 (autoload 'perltidy "perltidy-mode" nil t)
 (autoload 'perltidy-mode "perltidy-mode" nil t)
+(autoload 'perlcritic "perlcritic" nil t)
+(autoload 'perlcritic-region "perlcritic" nil t)
+(autoload 'perlcritic-mode "perlcritic" nil t)
 
 (autoload 'sepia-init "sepia" nil t)
 (defalias 'run-perl 'sepia-init)
+
+(defun perl-eval-region (start end)
+  "Evaluate Perl code in the current region."
+  (interactive "r")
+  (shell-command-on-region start end "perl " "*Perl Output*"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tt-mode
@@ -958,7 +966,6 @@ is closer to GNU basename."
       (cons (nth 2 edges)
             (nth 3 edges))))
   (mouse-avoidance-mode 'banish))
-
 
 (server-start)
 
