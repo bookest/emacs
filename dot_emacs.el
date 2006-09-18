@@ -904,10 +904,10 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ediff
-(defun cjg:ediff-setup ()
-  (setq ediff-window-setup-function 'ediff-setup-windows-plain))
-
-(add-hook 'ediff-load-hook 'cjg:ediff-setup)
+(eval-after-load "ediff"
+  '(progn
+     (setq ediff-window-setup-function 'ediff-setup-windows-plain
+           ediff-split-window-function 'split-window-horizontally)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tnt
@@ -928,22 +928,6 @@ is closer to GNU basename."
      (setq erc-auto-query 'window-noselect)))
 
 (autoload 'erc-select "erc" nil t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; itunes
-(eval-after-load "itunes"
-  '(progn
-     (cjg-define-global-keys
-       ("C-x 5n" . 'cjg-itunes-next-track)
-       ("C-x 5p" . 'cjg-itunes-previous-track)
-       ("C-x 5s" . 'cjg-itunes-stop)
-       ("C-x 5l" . 'cjg-itunes-play))))
-
-(when (fboundp 'do-applescript)
-  (autoload 'cjg5-itunes-next-track "itunes" nil t)
-  (autoload 'cjg5-itunes-previuos-track "itunes" nil t)
-  (autoload 'cjg5-itunes-stop "itunes" nil t)
-  (autoload 'cjg5-itunes-play "itunes" nil t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; message-mode
@@ -975,12 +959,6 @@ is closer to GNU basename."
             (nth 3 edges))))
   (mouse-avoidance-mode 'banish))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; work and homebrew modes
-;(require 'ncbi-pxe)
-;(require 'papyrus)
-;(require 'ncbi-facilities)
-;(require 'ncbi-hints)
 
 (server-start)
 
