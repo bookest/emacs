@@ -94,7 +94,8 @@ NAME converted to lowercase."
 
 (cjg-disable 'scroll-bar-mode
              'tool-bar-mode
-             'menu-bar-mode)
+             'menu-bar-mode
+	     'cua-mode)
 
 (display-time)
 
