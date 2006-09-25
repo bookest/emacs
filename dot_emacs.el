@@ -75,6 +75,10 @@ NAME converted to lowercase."
   "Returns true if running under Carbon."
   (string= window-system "mac"))
 
+(defun aquamacs-p ()
+  "Returns trus if running under Aquamacs."
+  (boundp 'aquamacs-version))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
 
@@ -85,6 +89,7 @@ NAME converted to lowercase."
 
 (defun cjg-disable (&rest lst)
   (cjg-toggle -1 lst))
+
 (defun cjg-enable (&rest lst)
   (cjg-toggle 1 lst))
 
@@ -94,8 +99,7 @@ NAME converted to lowercase."
 
 (cjg-disable 'scroll-bar-mode
              'tool-bar-mode
-             'menu-bar-mode
-	     'cua-mode)
+             'menu-bar-mode)
 
 (display-time)
 
@@ -122,12 +126,20 @@ NAME converted to lowercase."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; macosx specific config
 (when (macosx-p)
+  (setq mac-command-modifier 'meta)
+
   (when (carbon-p)			; set color scheme for Carbon
     (dolist (elm '((foreground-color . "white")
 		   (background-color . "black")
 		   (cursor-color . "coral")))
-      (add-to-list 'default-frame-alist elm))))
-
+      (add-to-list 'default-frame-alist elm)))
+  
+  (when (aquamacs-p)
+    (setq default-major-mode 'fundamental-mode
+          initial-major-mode 'lisp-interaction-mode)
+    (cjg-disable 'cua-mode
+                 'osx-key-mode
+                 'one-buffer-one-frame-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; global keybindings
