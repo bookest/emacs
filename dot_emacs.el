@@ -165,8 +165,6 @@ NAME converted to lowercase."
   ("C-c g" . 'goto-line)
   ("C-c #" . 'comment-region)
   ("C-c $" . 'uncomment-region)
-  ("C-c t" . 'todo-show)
-  ("C-c i" . 'todo-insert-item)
   ("C-c cc" . 'compile)
   ("C-x C-b" . 'cjg-buffer-list)
   ("RET" . 'newline-and-indent)
