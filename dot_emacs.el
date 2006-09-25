@@ -296,6 +296,13 @@ Stolen and modified from the original version found at
        (add-hook ',hook ',fun))))
 (put 'cjg-define-hook-fun 'lisp-indent-function 1)
 
+(defmacro cjg-eval-after-load (file &rest body)
+  "Evaluates `BODY' after `FILE' has been loaded.
+See `eval-after-load'."
+  `(eval-after-load ,file
+     '(progn ,@body)))
+(put 'cjg-eval-after-load 'lisp-indent-function 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; window and frame manipulations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -384,18 +391,17 @@ Makefile or makefile exist in the current directory."
 ;;; cperl-mode
 (defalias 'perl-mode 'cperl-mode) 
 
-(eval-after-load "cperl-mode"
-  '(progn
-     (setq cperl-electric-keywords nil
-	   cperl-electric-parens nil
-	   cperl-invalid-face nil
-	   cperl-under-as-char t
-	   cperl-indent-level 2)
-     (when (not (null cperl-mode-abbrev-table))
-       (cjg-define-abbrevs cperl-mode-abbrev-table
-         ("__p" "__PACKAGE__")
-         ("__d" "__DATA__")
-         ("__e" "__END__")))))
+(cjg-eval-after-load "cperl-mode"
+  (setq cperl-electric-keywords nil
+        cperl-electric-parens nil
+        cperl-invalid-face nil
+        cperl-under-as-char t
+        cperl-indent-level 2)
+  (when (not (null cperl-mode-abbrev-table))
+    (cjg-define-abbrevs cperl-mode-abbrev-table
+      ("__p" "__PACKAGE__")
+      ("__d" "__DATA__")
+      ("__e" "__END__"))))
 
 (cjg-define-compile-command cjg:cperl-set-compile-command
   (concat "perl -cw " 
@@ -495,6 +501,10 @@ Makefile or makefile exist in the current directory."
   (let ((sym (symbol-at-point)))
     (unintern sym)))
 
+(defmacro cjg-macroexpand (form)
+  "Pretty print the macro expansion of `FORM'."
+  `(pp (macroexpand-all ',form)))
+
 (require 'auto-recomp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -543,79 +553,76 @@ Makefile or makefile exist in the current directory."
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 
 
-(eval-after-load "ruby-mode"
-  '(progn
-     (cjg-define-hook-fun ruby-mode-hook
-       (cjg-enable 'ruby-electric-mode))
+(cjg-eval-after-load "ruby-mode"
+  (cjg-define-hook-fun ruby-mode-hook
+    (cjg-enable 'ruby-electric-mode))
      
-     (cjg-define-keys ruby-mode-map
-       ("RET" . 'ruby-reindent-then-newline-and-indent))
+  (cjg-define-keys ruby-mode-map
+    ("RET" . 'ruby-reindent-then-newline-and-indent))
      
-     (inf-ruby-keys)))
-     
+  (inf-ruby-keys))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-mode
-(eval-after-load "python"
-  '(progn
-     (cjg-define-hook-fun python-mode-hook
-       (cjg-enable 'abbrev-mode
-                   'outline-minor-mode)
-       (turn-on-eldoc-mode))
-
-     (defun pylint ()
-       "Run pylint against the file visited by the current buffer.
+(cjg-eval-after-load "python"
+  (cjg-define-hook-fun python-mode-hook
+    (cjg-enable 'abbrev-mode
+                'outline-minor-mode)
+    (turn-on-eldoc-mode))
+  
+  (defun pylint ()
+    "Run pylint against the file visited by the current buffer.
 Checks if unsaved buffers need to be saved."
-       (interactive)
-       (let ((command (concat "pylint --parseable=y \""
-                              (buffer-file-name (current-buffer))
-                              "\"")))
-         (save-some-buffers (not compilation-ask-about-save) nil) ; save  files.
-         (compilation-start command)))
+    (interactive)
+    (let ((command (concat "pylint --parseable=y \""
+                           (buffer-file-name (current-buffer))
+                           "\"")))
+      (save-some-buffers (not compilation-ask-about-save) nil) ; save  files.
+      (compilation-start command)))
+  
+  (defun cjg-python-electric-dot (n)
+    (interactive "p")
+    (let ((prev (char-before)))
+      (when (not (or (null prev)
+                     (python-in-string/comment)
+                     (equal (char-syntax prev) ?w)
+                     (equal (char-syntax prev) ?\")))
+        (insert "self")))
+    (self-insert-command n))
+  
+  (modify-syntax-entry ?_ "w" python-mode-syntax-table)
 
-     (defun cjg-python-electric-dot (n)
-       (interactive "p")
-       (let ((prev (char-before)))
-         (when (not (or (null prev)
-                        (python-in-string/comment)
-                        (equal (char-syntax prev) ?w)
-                        (equal (char-syntax prev) ?\")))
-           (insert "self")))
-       (self-insert-command n))
-     
-     (modify-syntax-entry ?_ "w" python-mode-syntax-table)
-
-     (font-lock-add-keywords 'python-mode
-                             '(("\\<\\(self\\)\\>" 1 'italic)))
-     
-     (cjg-define-keys python-mode-map
-       ("."  . 'cjg-python-electric-dot)
-       ("\"" . 'cjg-electric-pair)
-       ("\'" . 'cjg-electric-pair)
-       ("("  . 'cjg-electric-pair)
-       ("["  . 'cjg-electric-pair)
-       ("{"  . 'cjg-electric-pair)
-       (","  . 'cjg-insert-trailing-space))
-
-     (define-skeleton python-def-skeleton
-       "Insert a def statement."
-       nil
-       "def " _ "():")
-     
-     (define-skeleton python-class-skeleton
-       "Insert a class definition."
-       nil
-       "class " _ ":")
-
-     (cjg-define-abbrevs python-mode-abbrev-table
-       ("def" "" 'python-def-skeleton)
-       ("class" "" 'python-class-skeleton)
-       ("__i" "__init__")
-       ("__m" "__main__")
-       ("__v" "__version__")
-       ("__s" "__str__")
-       ("__n" "__name__")
-       ("__m" "__main__"))))
+  (font-lock-add-keywords 'python-mode
+                          '(("\\<\\(self\\)\\>" 1 'italic)))
+  
+  (cjg-define-keys python-mode-map
+    ("."  . 'cjg-python-electric-dot)
+    ("\"" . 'cjg-electric-pair)
+    ("\'" . 'cjg-electric-pair)
+    ("("  . 'cjg-electric-pair)
+    ("["  . 'cjg-electric-pair)
+    ("{"  . 'cjg-electric-pair)
+    (","  . 'cjg-insert-trailing-space))
+  
+  (define-skeleton python-def-skeleton
+    "Insert a def statement."
+    nil
+    "def " _ "():")
+  
+  (define-skeleton python-class-skeleton
+    "Insert a class definition."
+    nil
+    "class " _ ":")
+  
+  (cjg-define-abbrevs python-mode-abbrev-table
+    ("def" "" 'python-def-skeleton)
+    ("class" "" 'python-class-skeleton)
+    ("__i" "__init__")
+    ("__m" "__main__")
+    ("__v" "__version__")
+    ("__s" "__str__")
+    ("__n" "__name__")
+    ("__m" "__main__")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; viper-mode
@@ -641,112 +648,108 @@ Checks if unsaved buffers need to be saved."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; eshell
-(eval-after-load "eshell"
-  '(progn
-     (defun cjg-eshell-simple-prompt ()
-       "A simple [user@host] pwd > prompt for eshell."
-       (concat "[" user-login-name "@" 
-	       (car (split-string system-name "\\.")) "] " 
-	       (eshell/pwd)
-	       (if (= (user-uid) 0)
-		   " # "
-		 " > " )))
-
-     (defun cjg-eshell-mildly-fancy-prompt ()
-       "A prompt that is a little fancier than the simple prompt.
+(cjg-eval-after-load "eshell"
+  (defun cjg-eshell-simple-prompt ()
+    "A simple [user@host] pwd > prompt for eshell."
+    (concat "[" user-login-name "@" 
+            (car (split-string system-name "\\.")) "] " 
+            (eshell/pwd)
+            (if (= (user-uid) 0)
+                " # "
+              " > " )))
+  
+  (defun cjg-eshell-mildly-fancy-prompt ()
+    "A prompt that is a little fancier than the simple prompt.
 Adds the display of the current time in 24 hour format."
-       (concat (format-time-string "{%T}") (cjg-eshell-simple-prompt)))
-
-     (setq eshell-prompt-function 'cjg-eshell-mildly-fancy-prompt)
-     (setq eshell-prompt-regexp "^[^#>\n]* [#>] ")
-     (setq eshell-cp-interactive-query t
-	   eshell-ln-interactive-query t
-	   eshell-mv-interactive-query t
-	   eshell-rm-interactive-query t
-	   eshell-mv-overwrite-files nil)
-
-     (setq eshell-cmpl-cycle-completions nil) 
-
-     (setq eshell-scroll-show-maximum-output t
-	   eshell-scroll-to-bottom-on-output nil)
-
-     (cjg-define-hook-fun eshell-mode-hook
-       (add-to-list 'eshell-output-filter-functions
-                    'eshell-postoutput-scroll-to-bottom))
-
-     ;; handle ASCII control codes
-     (require 'ansi-color)
-     (add-hook 'eshell-preoutput-filter-functions 'ansi-color-apply)
-			      
-     (defun eshell/clear nil
-       "Emulate the shell command clear in lisp"
-       (let ((eshell-buffer-maximum-lines 0))
-	 (eshell-truncate-buffer)))
-
-     (defun eshell/perldoc (&rest args)
-       "Browse Perl documentation in Pod format. Similar to
+    (concat (format-time-string "{%T}") (cjg-eshell-simple-prompt)))
+  
+  (setq eshell-prompt-function 'cjg-eshell-mildly-fancy-prompt)
+  (setq eshell-prompt-regexp "^[^#>\n]* [#>] ")
+  (setq eshell-cp-interactive-query t
+        eshell-ln-interactive-query t
+        eshell-mv-interactive-query t
+        eshell-rm-interactive-query t
+        eshell-mv-overwrite-files nil)
+  
+  (setq eshell-cmpl-cycle-completions nil) 
+  
+  (setq eshell-scroll-show-maximum-output t
+        eshell-scroll-to-bottom-on-output nil)
+  
+  (cjg-define-hook-fun eshell-mode-hook
+    (add-to-list 'eshell-output-filter-functions
+                 'eshell-postoutput-scroll-to-bottom))
+  
+  ;; handle ASCII control codes
+  (require 'ansi-color)
+  (add-hook 'eshell-preoutput-filter-functions 'ansi-color-apply)
+  
+  (defun eshell/clear nil
+    "Emulate the shell command clear in lisp"
+    (let ((eshell-buffer-maximum-lines 0))
+      (eshell-truncate-buffer)))
+  
+  (defun eshell/perldoc (&rest args)
+    "Browse Perl documentation in Pod format. Similar to
 eshell/man. Taken from EmacsWiki."
-       (funcall 'perldoc (apply 'eshell-flatten-and-stringify args)))
-
-     (defun eshell/vi (&rest args)
-       "Invoke `find-file' on the file.
+    (funcall 'perldoc (apply 'eshell-flatten-and-stringify args)))
+  
+  (defun eshell/vi (&rest args)
+    "Invoke `find-file' on the file.
 \"vi +42 foo\" also goes to line 42 in the buffer."
-       (while args
-	 (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
-	     (let* ((line (string-to-number (match-string 1 (pop args))))
-		    (file (pop args)))
-	       (find-file file)
-	       (goto-line line))
-	   (find-file (pop args)))))
-
-     (defun eshell/view (&rest args)
-       "Invoke `view-file' on the file.  
+    (while args
+      (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
+          (let* ((line (string-to-number (match-string 1 (pop args))))
+                 (file (pop args)))
+            (find-file file)
+            (goto-line line))
+        (find-file (pop args)))))
+  
+  (defun eshell/view (&rest args)
+    "Invoke `view-file' on the file.  
 \"view +42 foo\" also goes to line 42 in the buffer."
-       (while args
-	 (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
-	     (let* ((line (string-to-number (match-string 1 (pop args))))
-		    (file (pop args)))
-	       (view-file file)
-	       (goto-line line))
-	   (view-file (pop args)))))))
+    (while args
+      (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
+          (let* ((line (string-to-number (match-string 1 (pop args))))
+                 (file (pop args)))
+            (view-file file)
+            (goto-line line))
+        (view-file (pop args))))))
 
 ;; this overrides the standard eshell/basename, so we have to be
 ;; careful about when it is loaded
-(eval-after-load "em-unix"
-  '(progn
-     (defun eshell/basename (filename &optional ext)
-       "Return FILENAME sans the directory, if EXT is provided remove
+(cjg-eval-after-load "em-unix"
+  (defun eshell/basename (filename &optional ext)
+    "Return FILENAME sans the directory, if EXT is provided remove
 the extension EXT from the end of the filename.
 
 Overrides the default eshell/basename with an implementation that
 is closer to GNU basename."
-       (save-match-data
-	 (let ((file (file-name-nondirectory filename))
-	       regex)
-	   (if (and ext
-		    (setq regex (concat (regexp-quote ext) "$"))
-		    (string-match regex file))
-	       (substring file 0 (match-beginning 0))
-	     file))))))
-  
+    (save-match-data
+      (let ((file (file-name-nondirectory filename))
+            regex)
+        (if (and ext
+                 (setq regex (concat (regexp-quote ext) "$"))
+                 (string-match regex file))
+            (substring file 0 (match-beginning 0))
+          file)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; w3m-mode
 (autoload 'w3m "w3m" "Interface for w3m on Emacs." t)
-(eval-after-load "w3m"
-  '(progn
-    (require 'w3m-search)
-    (add-to-list 'w3m-search-engine-alist 
-		 '("search-cpan" 
-		   "http://search.cpan.org/search?query=%s&mode=all"))
-    (add-to-list 'w3m-search-engine-alist 
-		 '("google-groups-clpm" 
-		   "http://groups.google.com/groups?hl=en&lr=&ie=ISO-8859-1&q=foo&btnG=Google+Search&meta=group%3Dcomp.lang.perl.misc"))
-    (add-to-list 'w3m-uri-replace-alist 
-		 '("\\`cpan:" w3m-search-uri-replace "search-cpan"))
-
-    (cjg-define-hook-fun w3m-mode-hook
-      (w3m-toggle-inline-images t))))
-
+(cjg-eval-after-load "w3m"
+  (require 'w3m-search)
+  (add-to-list 'w3m-search-engine-alist 
+               '("search-cpan" 
+                 "http://search.cpan.org/search?query=%s&mode=all"))
+  (add-to-list 'w3m-search-engine-alist 
+               '("google-groups-clpm" 
+                 "http://groups.google.com/groups?hl=en&lr=&ie=ISO-8859-1&q=foo&btnG=Google+Search&meta=group%3Dcomp.lang.perl.misc"))
+  (add-to-list 'w3m-uri-replace-alist 
+               '("\\`cpan:" w3m-search-uri-replace "search-cpan"))
+  
+  (cjg-define-hook-fun w3m-mode-hook
+    (w3m-toggle-inline-images t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; table-mode
@@ -754,85 +757,79 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; calendar-mode
-(eval-after-load "calendar"
-  '(progn
-     (add-hook 'initial-calendar-window-hook 'mark-calendar-holidays)
-     (add-hook 'diary-display-hook 'fancy-diary-display)
-     (setq diary-file "~/.diary")))
+(cjg-eval-after-load "calendar"
+  (add-hook 'initial-calendar-window-hook 'mark-calendar-holidays)
+  (add-hook 'diary-display-hook 'fancy-diary-display)
+  (setq diary-file "~/.diary"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; diary-mode
-(eval-after-load "diary"
-  '(progn
-     (add-hook 'diary-display-hook 'fancy-diary-display)
-     (add-hook 'diary-hook 'appt-make-list)
-     (setq diary-file "~/.diary")))
+(cjg-eval-after-load "diary"
+  (add-hook 'diary-display-hook 'fancy-diary-display)
+  (add-hook 'diary-hook 'appt-make-list)
+  (setq diary-file "~/.diary"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRAMP
-(eval-after-load "tramp" 
-  '(progn
-     (require 'tramp-util)              ;enable tramp-compile
-     (setq tramp-default-method "ssh")
-
-     (add-to-list 'tramp-default-method-alist
-		  '("\\`localhost\\'" "\\`root\\'" "sudo"))
-
-     (tramp-set-completion-function "ssh"
-				    '((tramp-parse-sconfig "~/.ssh/config")
-                                      (tramp-parse-shosts 
-				       "/etc/ssh/ssh_known_hosts")
-				      (tramp-parse-shosts 
-				       "/etc/ssh/ssh_known_hosts2")
-				      (tramp-parse-shosts "~/.ssh/known_hosts2")
-				      (tramp-parse-shosts "~/.ssh/known_hosts")))
-
-     ;; shut off backups for remote files
-     (add-to-list 'backup-directory-alist
-                  (cons tramp-file-name-regexp nil))))
+(cjg-eval-after-load "tramp" 
+  (require 'tramp-util)              ;enable tramp-compile
+  (setq tramp-default-method "ssh")
+  
+  (add-to-list 'tramp-default-method-alist
+               '("\\`localhost\\'" "\\`root\\'" "sudo"))
+  
+  (tramp-set-completion-function "ssh"
+                                 '((tramp-parse-sconfig "~/.ssh/config")
+                                   (tramp-parse-shosts 
+                                    "/etc/ssh/ssh_known_hosts")
+                                   (tramp-parse-shosts 
+                                    "/etc/ssh/ssh_known_hosts2")
+                                   (tramp-parse-shosts "~/.ssh/known_hosts2")
+                                   (tramp-parse-shosts "~/.ssh/known_hosts")))
+  
+  ;; shut off backups for remote files
+  (add-to-list 'backup-directory-alist
+               (cons tramp-file-name-regexp nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; jabber-mode
-(eval-after-load "jabber"
-  '(progn
-     (defface jabber-roster-user-xa
-       '((t (:foreground "pink" :weight normal :slant italic)))
-       "face for displaying extended away users"
-       :group 'jabber-faces)
-     (setq jabber-server "jabber.ncbi.nlm.nih.gov"
-	   jabber-username "grim"
-	   jabber-nickname "grim")
-     (jabber-activity-mode 1)
-     (jabber-mode-line-mode 1)))
+(cjg-eval-after-load "jabber"
+  (defface jabber-roster-user-xa
+    '((t (:foreground "pink" :weight normal :slant italic)))
+    "face for displaying extended away users"
+    :group 'jabber-faces)
+  (setq jabber-server "jabber.ncbi.nlm.nih.gov"
+        jabber-username "grim"
+        jabber-nickname "grim")
+  (jabber-activity-mode 1)
+  (jabber-mode-line-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; emacs-wiki
 (autoload 'emacs-wiki-find-file "emacs-wiki" "Visit an Emacs wiki page" t)
-(eval-after-load "emacs-wiki"
-  '(progn
-     (require 'emacs-wiki-srctag)
-     (add-to-list 'emacs-wiki-src-tag-modes-alist 
-		  '("perl" . cperl-mode))
-     (add-to-list 'emacs-wiki-src-tag-modes-alist 
-		  '("sh" . shell-script-mode))
-     (add-to-list 'emacs-wiki-interwiki-names
-		  '("SystemsWiki" . "http://graceland:6224/irb/wiki/wiki.cgi?"))
-     (add-to-list 'emacs-wiki-interwiki-names
-		  '("BlastWiki" . "http://yar.ncbi.nlm.nih.gov:6224/staff/coulouri/awkiawki/awki.cgi/"))
-     (add-to-list 'emacs-wiki-interwiki-names '("Wiki" . "~/Wiki/default/"))
-     (add-to-list 'emacs-wiki-interwiki-names '("Planner" . "~/Plans/"))
-     (add-to-list 'emacs-wiki-interwiki-names 
-		  ;;XXX:
-		  ;; this should be a function that URL-escapes
-		  ;; the passed in tag, so things like
-		  ;; [[CPAN#Foo::Bar][Foo::Bar]] work properly.
-		  '("CPAN" . "http://search.cpan.org/perldoc?"))
-
-     (setq emacs-wiki-projects
-	   '(("default" . ((emacs-wiki-directories . ("~/Wiki/default"))))
-	     ("graceland" . ((emacs-wiki-directories . ("~/Wiki/graceland"))
-			     (emacs-wiki-publishing-directory . "/net/graceland/web/private/htdocs/staff/grim")))))))
-	   
+(cjg-eval-after-load "emacs-wiki"
+  (require 'emacs-wiki-srctag)
+  (add-to-list 'emacs-wiki-src-tag-modes-alist 
+               '("perl" . cperl-mode))
+  (add-to-list 'emacs-wiki-src-tag-modes-alist 
+               '("sh" . shell-script-mode))
+  (add-to-list 'emacs-wiki-interwiki-names
+               '("SystemsWiki" . "http://graceland:6224/irb/wiki/wiki.cgi?"))
+  (add-to-list 'emacs-wiki-interwiki-names
+               '("BlastWiki" . "http://yar.ncbi.nlm.nih.gov:6224/staff/coulouri/awkiawki/awki.cgi/"))
+  (add-to-list 'emacs-wiki-interwiki-names '("Wiki" . "~/Wiki/default/"))
+  (add-to-list 'emacs-wiki-interwiki-names '("Planner" . "~/Plans/"))
+  (add-to-list 'emacs-wiki-interwiki-names 
+               ;;XXX:
+               ;; this should be a function that URL-escapes
+               ;; the passed in tag, so things like
+               ;; [[CPAN#Foo::Bar][Foo::Bar]] work properly.
+               '("CPAN" . "http://search.cpan.org/perldoc?"))
+  
+  (setq emacs-wiki-projects
+        '(("default" . ((emacs-wiki-directories . ("~/Wiki/default"))))
+          ("graceland" . ((emacs-wiki-directories . ("~/Wiki/graceland"))
+                          (emacs-wiki-publishing-directory . "/net/graceland/web/private/htdocs/staff/grim"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; planner-mode
@@ -841,65 +838,58 @@ is closer to GNU basename."
   "Create a task based on current buffer" t)
 (autoload 'planner-create-note "planner" 
   "Create a note on the current days plan" t)
-(eval-after-load "planner"
-  '(progn
-     (require 'emacs-wiki)
-     (require 'planner-diary)
-     (require 'planner-lisp)
-     (require 'planner-gnus)
-     (require 'planner-bbdb)
-     (require 'planner-log-edit)
-     (require 'planner-cyclic)
-     (require 'remember-planner)
-
-     (setq planner-carry-tasks-forward t
-	   planner-use-task-numbers t
-	   planner-default-task-priority "B"
-	   planner-diary-use-diary t)
-     (setq planner-day-page-template 
-	   "* Tasks\n\n\n* Schedule\n\n\n* Diary\n\n\n* Notes\n\n\n")
-     
-     (planner-diary-insinuate)
-     (planner-calendar-insinuate)
-     (planner-gnus-insinuate)
-
-     (setq remember-handler-functions '(remember-planner-append)
-	   remember-annotation-functions planner-annotation-functions)
-
-     (cjg-define-hook-fun planner-mode-hook
-       (cjg-disable 'flyspell-mode))))
+(cjg-eval-after-load "planner"
+  (require 'emacs-wiki)
+  (require 'planner-diary)
+  (require 'planner-lisp)
+  (require 'planner-gnus)
+  (require 'planner-bbdb)
+  (require 'planner-log-edit)
+  (require 'planner-cyclic)
+  (require 'remember-planner)
+  
+  (setq planner-carry-tasks-forward t
+        planner-use-task-numbers t
+        planner-default-task-priority "B"
+        planner-diary-use-diary t)
+  (setq planner-day-page-template 
+        "* Tasks\n\n\n* Schedule\n\n\n* Diary\n\n\n* Notes\n\n\n")
+  
+  (planner-diary-insinuate)
+  (planner-calendar-insinuate)
+  (planner-gnus-insinuate)
+  
+  (setq remember-handler-functions '(remember-planner-append)
+        remember-annotation-functions planner-annotation-functions)
+  
+  (cjg-define-hook-fun planner-mode-hook
+    (cjg-disable 'flyspell-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember
 (autoload 'remember "remember" nil t)
-
-(eval-after-load "remember"
-  '(progn
-     (cjg-define-hook-fun remember-mode-hook
-       (cjg-enable 'flyspell-mode))))
+(cjg-eval-after-load "remember"
+  (cjg-define-hook-fun remember-mode-hook
+    (cjg-enable 'flyspell-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bbdb
 (autoload 'bbdb-insinuate-gnus "bbdb" nil t)
-(eval-after-load "bbdb"
-  '(progn
-     (bbdb-initialize 'gnus)))
+(cjg-eval-after-load "bbdb"
+  (bbdb-initialize 'gnus))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; cfengine
 (autoload 'cfengine-mode "cfengine" nil t)
-(eval-after-load "cfengine"
-  '(progn
-     (setq cfengine-indent 2)))
+(cjg-eval-after-load "cfengine"
+  (setq cfengine-indent 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; newsticker
 (autoload 'newsticker-start "newsticker" "Emacs Newsticker" t)
 (autoload 'newsticker-show-news "newsticker" "Emacs Newsticker" t)
-(eval-after-load "newsticker"
-  '(progn
-     (setq newsticker-url-list '(("CDATA format testing" "http://graceland:6224/staff/grim/test.xml")))))
-
+(cjg-eval-after-load "newsticker"
+  (setq newsticker-url-list '(("CDATA format testing" "http://graceland:6224/staff/grim/test.xml"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ratpoison
@@ -913,36 +903,32 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ediff
-(eval-after-load "ediff"
-  '(progn
-     (setq ediff-window-setup-function 'ediff-setup-windows-plain
-           ediff-split-window-function 'split-window-horizontally)))
+(cjg-eval-after-load "ediff"
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain
+        ediff-split-window-function 'split-window-horizontally))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tnt
-(eval-after-load "tnt"
-  '(progn
-     (setq tnt-default-username "bookist"
-           tnt-use-timestamps t
-           tnt-show-inactive-buddies t
-           tnt-show-events-in-mode t)))
-
+(cjg-eval-after-load "tnt"
+  (setq tnt-default-username "bookist"
+        tnt-use-timestamps t
+        tnt-show-inactive-buddies t
+        tnt-show-events-in-mode t))
 (autoload 'tnt-open "tnt" nil t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; erc
-(eval-after-load "erc"
-  '(progn
-     (require 'erc-spelling)
-     (setq erc-auto-query 'window-noselect)))
-
+(cjg-eval-after-load "erc"
+  (require 'erc-spelling)
+  (setq erc-auto-query 'window-noselect))
 (autoload 'erc-select "erc" nil t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; message-mode
-(cjg-define-hook-fun message-mode-hook
-  (cjg-enable 'flyspell-mode
-              'footnote-mode))
+(cjg-eval-after-load "message"
+  (cjg-define-hook-fun message-mode-hook
+    (cjg-enable 'flyspell-mode
+                'footnote-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; text-mode
