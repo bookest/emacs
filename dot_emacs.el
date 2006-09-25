@@ -287,6 +287,15 @@ Stolen and modified from the original version found at
                  abbrevs))))
 (put 'cjg-define-abbrevs 'lisp-indent-function 1)
 
+(defmacro cjg-define-hook-fun (hook &rest body)
+  (let ((fun (intern (concat "cjg-"
+                             (symbol-name hook)))))
+    `(progn
+       (defun ,fun ()
+         (progn ,@body))
+       (add-hook ',hook ',fun))))
+(put 'cjg-define-hook-fun 'lisp-indent-function 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; window and frame manipulations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -392,13 +401,10 @@ Makefile or makefile exist in the current directory."
   (concat "perl -cw " 
 	  (file-name-nondirectory buffer-file-name)))
 
-(defun cjg:cperl-mode-setup ()
-  "Setup CPerl-Mode. Called from 'cperl-mode-hook'."
+(cjg-define-hook-fun cperl-mode-hook
   (cjg:cperl-set-compile-command)
-  (auto-insert-mode 1)
-  (abbrev-mode 1))
-
-(add-hook 'cperl-mode-hook 'cjg:cperl-mode-setup)
+  (cjg-enable 'auto-insert-mode
+              'abbrev-mode))
 
 (add-to-list 'auto-mode-alist '("\\.t$" . cperl-mode))
 
@@ -539,22 +545,22 @@ Makefile or makefile exist in the current directory."
 
 (eval-after-load "ruby-mode"
   '(progn
-     (defun cjg-ruby-mode-setup ()
-       (ruby-electric-mode 1))
+     (cjg-define-hook-fun ruby-mode-hook
+       (cjg-enable 'ruby-electric-mode))
      
      (cjg-define-keys ruby-mode-map
        ("RET" . 'ruby-reindent-then-newline-and-indent))
      
-     (inf-ruby-keys)
-     (add-hook 'ruby-mode-hook 'cjg-ruby-mode-setup)))
+     (inf-ruby-keys)))
+     
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-mode
 (eval-after-load "python"
   '(progn
-     (defun cjg-python-mode-setup ()
-       (abbrev-mode 1)
-       (outline-minor-mode 1)
+     (cjg-define-hook-fun python-mode-hook
+       (cjg-enable 'abbrev-mode
+                   'outline-minor-mode)
        (turn-on-eldoc-mode))
 
      (defun pylint ()
@@ -609,9 +615,7 @@ Checks if unsaved buffers need to be saved."
        ("__v" "__version__")
        ("__s" "__str__")
        ("__n" "__name__")
-       ("__m" "__main__"))
-     
-     (add-hook 'python-mode-hook 'cjg-python-mode-setup)))
+       ("__m" "__main__"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; viper-mode
@@ -625,14 +629,6 @@ Checks if unsaved buffers need to be saved."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; outline-mode
 (autoload 'outline-minor-mode "outline" "Toggle Outline minor mode")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; todo-mode
-(autoload 'todo-mode "todo-mode" "Major mode for editing TODO lists." t)
-(autoload 'todo-show "todo-mode" "Show TODO items." t)
-(autoload 'todo-insert-item "todo-mode" "Add TODO item." t)
-
-(add-hook 'todo-mode-hook 'outline-minor-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; shell-mode
@@ -674,11 +670,9 @@ Adds the display of the current time in 24 hour format."
      (setq eshell-scroll-show-maximum-output t
 	   eshell-scroll-to-bottom-on-output nil)
 
-     (defun cjg-eshell-setup ()
+     (cjg-define-hook-fun eshell-mode-hook
        (add-to-list 'eshell-output-filter-functions
-		    'eshell-postoutput-scroll-to-bottom))
-
-     (add-hook 'eshell-mode-hook 'cjg-eshell-setup)
+                    'eshell-postoutput-scroll-to-bottom))
 
      ;; handle ASCII control codes
      (require 'ansi-color)
@@ -750,11 +744,8 @@ is closer to GNU basename."
     (add-to-list 'w3m-uri-replace-alist 
 		 '("\\`cpan:" w3m-search-uri-replace "search-cpan"))
 
-    (defun cjg-w3m-setup ()
-      "Setup function for w3m-mode. Called from w3m-mode-hook."
-      (w3m-toggle-inline-images t))
-
-    (add-hook 'w3m-mode-hook 'cjg-w3m-setup)))
+    (cjg-define-hook-fun w3m-mode-hook
+      (w3m-toggle-inline-images t))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -875,10 +866,8 @@ is closer to GNU basename."
      (setq remember-handler-functions '(remember-planner-append)
 	   remember-annotation-functions planner-annotation-functions)
 
-     (defun cjg-planner-mode-setup ()
-       (flyspell-mode -1))
-     
-     (add-hook 'planner-mode-hook 'cjg-planner-mode-setup)))
+     (cjg-define-hook-fun planner-mode-hook
+       (cjg-disable 'flyspell-mode))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember
@@ -886,9 +875,8 @@ is closer to GNU basename."
 
 (eval-after-load "remember"
   '(progn
-     (defun cjg-remember-mode-setup ()
-       (flyspell-mode 1))
-     (add-hook 'remember-mode-hook 'cjg-remember-mode-setup)))
+     (cjg-define-hook-fun remember-mode-hook
+       (cjg-enable 'flyspell-mode))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bbdb
@@ -952,19 +940,15 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; message-mode
-(defun cjg-message-mode-setup ()
-  (flyspell-mode 1)
-  (footnote-mode 1))
-
-(add-hook 'message-mode-hook 'cjg-message-mode-setup)
+(cjg-define-hook-fun message-mode-hook
+  (cjg-enable 'flyspell-mode
+              'footnote-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; text-mode
-(defun cjg-text-mode-setup ()
-  (flyspell-mode 1)
-  (footnote-mode 1))
-
-(add-hook 'text-mode-hook 'cjg-text-mode-setup)
+(cjg-define-hook-fun text-mode-hook
+  (cjg-enable 'flyspell-mode
+              'footnote-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; css-mode-simple
