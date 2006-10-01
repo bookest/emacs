@@ -585,7 +585,7 @@ Checks if unsaved buffers need to be saved."
                      (python-in-string/comment)
                      (equal (char-syntax prev) ?w)
                      (equal (char-syntax prev) ?\")
-                     (equal (char-syntax prev) ?w)))
+                     (equal (char-syntax prev) ?\))))
         (insert "self")))
     (self-insert-command n))
   
