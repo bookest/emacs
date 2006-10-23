@@ -408,7 +408,8 @@ Makefile or makefile exist in the current directory."
 (cjg-define-hook-fun cperl-mode-hook
   (cjg:cperl-set-compile-command)
   (cjg-enable 'auto-insert-mode
-              'abbrev-mode))
+              'abbrev-mode)
+  (flyspell-prog-mode))
 
 (add-to-list 'auto-mode-alist '("\\.t$" . cperl-mode))
 
@@ -482,6 +483,8 @@ Makefile or makefile exist in the current directory."
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
+(add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
+
 ;; these are from cliki:EditingLispCodeWithEmacs
 (cjg-define-keys emacs-lisp-mode-map
   ("C-t" . 'transpose-sexps)
@@ -514,6 +517,7 @@ Makefile or makefile exist in the current directory."
 	  (file-name-nondirectory buffer-file-name)))
 
 (add-hook 'sh-mode-hook 'cjg:sh-set-compile-command)
+(add-hook 'sh-mode-hook 'flyspell-prog-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C-mode
@@ -527,7 +531,7 @@ Makefile or makefile exist in the current directory."
 	    file)))
 
 (add-hook 'c-mode-hook 'cjg:c-set-compile-command)
-
+(add-hook 'c-mode-hook 'flyspell-prog-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C++-mode
 
@@ -539,6 +543,7 @@ Makefile or makefile exist in the current directory."
 	    file)))
 
 (add-hook 'c++-mode-hook 'cjg:c++-set-compile-command)
+(add-hook 'c++-mode-hook 'flyspell-prog-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ruby-mode
@@ -553,7 +558,8 @@ Makefile or makefile exist in the current directory."
 
 (cjg-eval-after-load "ruby-mode"
   (cjg-define-hook-fun ruby-mode-hook
-    (cjg-enable 'ruby-electric-mode))
+    (cjg-enable 'ruby-electric-mode)
+    (flyspell-prog-mode))
      
   (cjg-define-keys ruby-mode-map
     ("RET" . 'ruby-reindent-then-newline-and-indent))
@@ -566,7 +572,8 @@ Makefile or makefile exist in the current directory."
   (cjg-define-hook-fun python-mode-hook
     (cjg-enable 'abbrev-mode
                 'outline-minor-mode)
-    (turn-on-eldoc-mode))
+    (turn-on-eldoc-mode)
+    (flyspell-prog-mode))
   
   (defun pylint ()
     "Run pylint against the file visited by the current buffer.
@@ -622,6 +629,11 @@ Checks if unsaved buffers need to be saved."
     ("__s" "__str__")
     ("__n" "__name__")
     ("__m" "__main__")))
+
+(autoload 'pymacs-load "pymacs" nil t)
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; viper-mode
@@ -939,6 +951,7 @@ is closer to GNU basename."
 ;;; css-mode-simple
 (add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
 (autoload 'css-mode "css-mode-simple" nil t)
+(add-hook 'css-mode-hook 'flyspell-prog-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mouse-avoidance-mode
