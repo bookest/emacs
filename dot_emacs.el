@@ -95,7 +95,8 @@ NAME converted to lowercase."
 
 (cjg-enable 'column-number-mode
             'line-number-mode
-            'show-paren-mode)
+            'show-paren-mode
+            'ido-mode)
 
 (cjg-disable 'scroll-bar-mode
              'tool-bar-mode
@@ -555,7 +556,6 @@ Makefile or makefile exist in the current directory."
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 
-
 (cjg-eval-after-load "ruby-mode"
   (cjg-define-hook-fun ruby-mode-hook
     (cjg-enable 'ruby-electric-mode)
@@ -563,7 +563,27 @@ Makefile or makefile exist in the current directory."
      
   (cjg-define-keys ruby-mode-map
     ("RET" . 'ruby-reindent-then-newline-and-indent))
-     
+
+  (defun xmp ()
+    (interactive)
+    (let ((line (current-line))
+          (col  (current-column)))
+      (shell-command-on-region 1 (point-max) (xmp-command) t t)
+      (goto-line line)
+      (move-to-column col)))
+
+  (defun xmp-command ()
+    (cond ((save-excursion
+             (goto-char 1)
+             (search-forward "< Test::Unit::TestCase" nil t))
+           "ruby -S xmpfilter.rb --unittest")
+          ((save-excursion
+             (goto-char 1)
+             (re-search-forward "^context.+do$" nil t))
+           "ruby -S xmpfilter.rb --spec")
+          (t
+           "ruby -S xmpfilter.rb")))
+  
   (inf-ruby-keys))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -961,6 +981,11 @@ is closer to GNU basename."
       (cons (nth 2 edges)
             (nth 3 edges))))
   (mouse-avoidance-mode 'banish))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ido
+(cjg-eval-after-load "ido"
+  (setq ido-slow-ftp-host-regexps '(".*")))
 
 (server-start)
 
