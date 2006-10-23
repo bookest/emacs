@@ -119,6 +119,8 @@ NAME converted to lowercase."
 
 (setq-default indent-tabs-mode nil)
 
+(add-to-list 'safe-local-variable-values '(auto-recompile . t))
+
 (defvar *cjg-work-email-address* "chris.grim@nyu.edu")
 
 (when (at-work-p)
@@ -844,23 +846,13 @@ is closer to GNU basename."
                '("perl" . cperl-mode))
   (add-to-list 'emacs-wiki-src-tag-modes-alist 
                '("sh" . shell-script-mode))
-  (add-to-list 'emacs-wiki-interwiki-names
-               '("SystemsWiki" . "http://graceland:6224/irb/wiki/wiki.cgi?"))
-  (add-to-list 'emacs-wiki-interwiki-names
-               '("BlastWiki" . "http://yar.ncbi.nlm.nih.gov:6224/staff/coulouri/awkiawki/awki.cgi/"))
   (add-to-list 'emacs-wiki-interwiki-names '("Wiki" . "~/Wiki/default/"))
   (add-to-list 'emacs-wiki-interwiki-names '("Planner" . "~/Plans/"))
   (add-to-list 'emacs-wiki-interwiki-names 
-               ;;XXX:
                ;; this should be a function that URL-escapes
                ;; the passed in tag, so things like
                ;; [[CPAN#Foo::Bar][Foo::Bar]] work properly.
-               '("CPAN" . "http://search.cpan.org/perldoc?"))
-  
-  (setq emacs-wiki-projects
-        '(("default" . ((emacs-wiki-directories . ("~/Wiki/default"))))
-          ("graceland" . ((emacs-wiki-directories . ("~/Wiki/graceland"))
-                          (emacs-wiki-publishing-directory . "/net/graceland/web/private/htdocs/staff/grim"))))))
+               '("CPAN" . "http://search.cpan.org/perldoc?")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; planner-mode
