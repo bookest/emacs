@@ -412,7 +412,10 @@ Makefile or makefile exist in the current directory."
   (cjg:cperl-set-compile-command)
   (cjg-enable 'auto-insert-mode
               'abbrev-mode)
-  (flyspell-prog-mode))
+  (flyspell-prog-mode)
+  (turn-on-eldoc-mode)
+  (set (make-local-variable 'eldoc-documentation-function)
+       'cjg-cperl-eldoc-documentation-function))
 
 (add-to-list 'auto-mode-alist '("\\.t$" . cperl-mode))
 
@@ -472,6 +475,11 @@ Makefile or makefile exist in the current directory."
   "Evaluate Perl code in the current region."
   (interactive "r")
   (shell-command-on-region start end "perl " "*Perl Output*"))
+
+(defun cjg-cperl-eldoc-documentation-function ()
+  "Return doc string for `eldoc-mode'."
+  (let ((cperl-message-on-help-error nil))
+    (car (cperl-get-help))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tt-mode
