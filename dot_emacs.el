@@ -166,8 +166,7 @@ NAME converted to lowercase."
   ("%" . 'cjg-match-paren)
   ("C-c o" .  'occur)
   ("C-c g" . 'goto-line)
-  ("C-c #" . 'comment-region)
-  ("C-c $" . 'uncomment-region)
+  ("C-c #" . 'comment-or-uncomment-region)
   ("C-c cc" . 'compile)
   ("C-x C-b" . 'cjg-buffer-list)
   ("RET" . 'newline-and-indent)
@@ -658,7 +657,8 @@ Checks if unsaved buffers need to be saved."
     ("__v" "__version__")
     ("__s" "__str__")
     ("__n" "__name__")
-    ("__m" "__main__")))
+    ("__m" "__main__")
+    ("ifm" "if __name__ == '__main__':")))
 
 (autoload 'pymacs-load "pymacs" nil t)
 (autoload 'pymacs-eval "pymacs" nil t)
@@ -986,6 +986,10 @@ is closer to GNU basename."
 ;;; ido
 (cjg-eval-after-load "ido"
   (setq ido-slow-ftp-host-regexps '(".*")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; psvn
+(autoload 'svn-examine "psvn" nil t )
 
 (server-start)
 
