@@ -76,7 +76,7 @@ NAME converted to lowercase."
   (string= window-system "mac"))
 
 (defun aquamacs-p ()
-  "Returns trus if running under Aquamacs."
+  "Returns true if running under Aquamacs."
   (boundp 'aquamacs-version))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -178,19 +178,11 @@ NAME converted to lowercase."
   "Go to the matching paren if on a paren; otherwise insert %.
 Very blasphemous."
   (interactive "p")
-  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-        (t (self-insert-command (or arg 1)))))
-
-(defun cjg-improved-match-paren (arg)
-  "Go to the matching paren if on a paren; otherwise insert %.
-Very blasphemous."
-  (interactive "p")
-  (let ((current-syntax (string (char-syntax (char-after (point))))))
-    (cond ((equal current-syntax "(")
+  (let ((current-syntax (char-syntax (char-after (point)))))
+    (cond ((equal current-syntax ?\()
            (forward-list 1)
            (backward-char 1))
-          ((equal current-syntax ")")
+          ((equal current-syntax ?\))
            (forward-char 1)
            (backward-list 1))
           (t (self-insert-command (or arg 1))))))
@@ -390,6 +382,7 @@ Makefile or makefile exist in the current directory."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; cperl-mode
 (defalias 'perl-mode 'cperl-mode) 
+(add-to-list 'auto-mode-alist '("\\.t$" . cperl-mode))
 
 (cjg-eval-after-load "cperl-mode"
   (setq cperl-electric-keywords nil
@@ -397,26 +390,64 @@ Makefile or makefile exist in the current directory."
         cperl-invalid-face nil
         cperl-under-as-char t
         cperl-indent-level 2)
+  
   (when (not (null cperl-mode-abbrev-table))
     (cjg-define-abbrevs cperl-mode-abbrev-table
       ("__p" "__PACKAGE__")
       ("__d" "__DATA__")
-      ("__e" "__END__"))))
+      ("__e" "__END__")))
+  
+  (cjg-define-compile-command cjg:cperl-set-compile-command
+    (concat "perl -cw " 
+            (file-name-nondirectory buffer-file-name)))
+  
+  (cjg-define-hook-fun cperl-mode-hook
+    (cjg:cperl-set-compile-command)
+    (cjg-enable 'auto-insert-mode
+                'abbrev-mode)
+    (flyspell-prog-mode)
+    (turn-on-eldoc-mode)
+    (set (make-local-variable 'eldoc-documentation-function)
+         'cjg-cperl-eldoc-documentation-function))
 
-(cjg-define-compile-command cjg:cperl-set-compile-command
-  (concat "perl -cw " 
-	  (file-name-nondirectory buffer-file-name)))
+  (define-skeleton perl-module-skeleton
+    "Inserts a skeleton Perl module into the current buffer."
+    "Package name: "
+    "package " str ";\n"
+    "use strict;\n"
+    "use warnings;\n"
+    "\n" _ "\n\n"
+    "1;\n\n"
+    "__END__\n")
+  (define-auto-insert "\\.pm$" 'perl-module-skeleton)
+  
+  (define-skeleton perl-test-skeleton
+    "Inserts a skeleton Perl test file into the current buffer."
+    nil
+    "use strict;\n"
+    "use warnings;\n"
+    "\n"
+    "use Test::More qw(no_plan);\n"
+    "\n" _ "\n"
+    "\n"
+    "__END__\n")
+  (define-auto-insert "\\.t$" 'perl-test-skeleton)
 
-(cjg-define-hook-fun cperl-mode-hook
-  (cjg:cperl-set-compile-command)
-  (cjg-enable 'auto-insert-mode
-              'abbrev-mode)
-  (flyspell-prog-mode)
-  (turn-on-eldoc-mode)
-  (set (make-local-variable 'eldoc-documentation-function)
-       'cjg-cperl-eldoc-documentation-function))
+  (define-skeleton perl-script-skeleton
+    "Inserts a skeleton Perl script into the current buffer."
+    nil
+    "#!/usr/bin/perl\n"
+    "use strict;\n"
+    "use warnings;\n"
+    "\n" _ "\n"
+    "\n"
+    "__END__\n")
+  (define-auto-insert 'cperl-mode 'perl-script-skeleton t)
 
-(add-to-list 'auto-mode-alist '("\\.t$" . cperl-mode))
+  (defun cjg-cperl-eldoc-documentation-function ()
+    "Return doc string for `eldoc-mode'."
+    (let ((cperl-message-on-help-error nil))
+      (car (cperl-get-help)))))
 
 (defun perldoc (args)
   "Like man, but use perldoc instead."
@@ -425,39 +456,10 @@ Makefile or makefile exist in the current directory."
   (let ((manual-program "perldoc"))
     (man args)))
 
-(define-skeleton perl-module-skeleton
-  "Inserts a skeleton Perl module into the current buffer."
-  "Package name: "
-  "package " str ";\n"
-  "use strict;\n"
-  "use warnings;\n"
-  "\n" _ "\n\n"
-  "1;\n\n"
-  "__END__\n")
-(define-auto-insert "\\.pm$" 'perl-module-skeleton)
-  
-(define-skeleton perl-test-skeleton
-  "Inserts a skeleton Perl test file into the current buffer."
-  nil
-  "use strict;\n"
-  "use warnings;\n"
-  "\n"
-  "use Test::More qw(no_plan);\n"
-  "\n" _ "\n"
-  "\n"
-  "__END__\n")
-(define-auto-insert "\\.t$" 'perl-test-skeleton)
-
-(define-skeleton perl-script-skeleton
-  "Inserts a skeleton Perl script into the current buffer."
-  nil
-  "#!/usr/bin/perl\n"
-  "use strict;\n"
-  "use warnings;\n"
-  "\n" _ "\n"
-  "\n"
-  "__END__\n")
-(define-auto-insert 'cperl-mode 'perl-script-skeleton t)
+(defun perl-eval-region (start end)
+  "Evaluate Perl code in the current region."
+  (interactive "r")
+  (shell-command-on-region start end "perl " "*Perl Output*"))
 
 (autoload 'perl-lint "perl-lint-mode" nil t)
 (autoload 'perl-lint-mode "perl-lint-mode" nil t)
@@ -469,16 +471,6 @@ Makefile or makefile exist in the current directory."
 
 (autoload 'sepia-init "sepia" nil t)
 (defalias 'run-perl 'sepia-init)
-
-(defun perl-eval-region (start end)
-  "Evaluate Perl code in the current region."
-  (interactive "r")
-  (shell-command-on-region start end "perl " "*Perl Output*"))
-
-(defun cjg-cperl-eldoc-documentation-function ()
-  "Return doc string for `eldoc-mode'."
-  (let ((cperl-message-on-help-error nil))
-    (car (cperl-get-help))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tt-mode
@@ -520,14 +512,17 @@ Makefile or makefile exist in the current directory."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; sh-mode
-(setq sh-basic-offset 4)
+(cjg-eval-after-load "sh-script"
+    (setq sh-basic-offset 4)
 
-(cjg-define-compile-command cjg:sh-set-compile-command
-  (concat "bash -n "
-	  (file-name-nondirectory buffer-file-name)))
+  (cjg-define-compile-command cjg:sh-set-compile-command
+    (concat "bash -n "
+            (file-name-nondirectory buffer-file-name)))
 
-(add-hook 'sh-mode-hook 'cjg:sh-set-compile-command)
-(add-hook 'sh-mode-hook 'flyspell-prog-mode)
+  (cjg-define-hook-fun sh-mode-hook
+    (cjg:sh-set-compile-command)
+    (cjg-enable 'abbrev-mode)
+    (flyspell-prog-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C-mode
@@ -611,7 +606,7 @@ Checks if unsaved buffers need to be saved."
     (let ((command (concat "pylint --parseable=y \""
                            (buffer-file-name (current-buffer))
                            "\"")))
-      (save-some-buffers (not compilation-ask-about-save) nil) ; save  files.
+      (save-some-buffers (not compilation-ask-about-save) nil)
       (compilation-start command)))
   
   (defun cjg-python-electric-dot (n)
