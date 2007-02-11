@@ -870,14 +870,16 @@ is closer to GNU basename."
   (require 'planner-lisp)
   (require 'planner-gnus)
   (require 'planner-bbdb)
-  (require 'planner-log-edit)
+  (require 'planner-psvn)
   (require 'planner-cyclic)
   (require 'remember-planner)
   
   (setq planner-carry-tasks-forward t
         planner-use-task-numbers t
         planner-default-task-priority "B"
-        planner-diary-use-diary t)
+        planner-diary-use-diary t
+        planner-psvn-log-edit-notice-commit-function t
+        planner-psvn-log-edit-include-files-flag nil)
   (setq planner-day-page-template 
         "* Tasks\n\n\n* Schedule\n\n\n* Diary\n\n\n* Notes\n\n\n")
   
@@ -909,13 +911,6 @@ is closer to GNU basename."
 (autoload 'cfengine-mode "cfengine" nil t)
 (cjg-eval-after-load "cfengine"
   (setq cfengine-indent 2))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; newsticker
-(autoload 'newsticker-start "newsticker" "Emacs Newsticker" t)
-(autoload 'newsticker-show-news "newsticker" "Emacs Newsticker" t)
-(cjg-eval-after-load "newsticker"
-  (setq newsticker-url-list '(("CDATA format testing" "http://graceland:6224/staff/grim/test.xml"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ratpoison
