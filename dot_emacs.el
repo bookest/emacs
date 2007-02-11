@@ -981,6 +981,19 @@ is closer to GNU basename."
 ;;; psvn
 (autoload 'svn-examine "psvn" nil t )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; weblogger
+(cjg-eval-after-load "weblogger"
+  (setq weblogger-blogger-firstline-title t)
+  (weblogger-config-alist '(("NYU"
+                             ("user" . "cjg5")
+                             ("server-url" . "https://jira.home.nyu.edu:8443/confluence/rpc/xmlrpc")
+                             ("weblog" . "~cjg5")))))
+
+(autoload 'weblogger-start-entry "weblogger" nil t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (server-start)
 
 ;;; Local Variables: ***
