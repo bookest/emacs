@@ -96,7 +96,8 @@ NAME converted to lowercase."
 (cjg-enable 'column-number-mode
             'line-number-mode
             'show-paren-mode
-            'ido-mode)
+            'ido-mode
+            'which-function-mode)
 
 (cjg-disable 'scroll-bar-mode
              'tool-bar-mode
@@ -588,7 +589,8 @@ Makefile or makefile exist in the current directory."
           (t
            "ruby -S xmpfilter.rb")))
   
-  (inf-ruby-keys))
+  (inf-ruby-keys)
+  (add-to-list 'which-func-modes 'ruby-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-mode
@@ -624,7 +626,8 @@ Checks if unsaved buffers need to be saved."
 
   (font-lock-add-keywords 'python-mode
                           '(("\\<\\(self\\)\\>" 1 'italic)))
-  
+
+  (add-to-list 'which-func-modes 'python-mode)
   (cjg-define-keys python-mode-map
     ("."  . 'cjg-python-electric-dot)
     ("\"" . 'cjg-electric-pair)
