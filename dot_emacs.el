@@ -120,7 +120,8 @@ NAME converted to lowercase."
 
 (setq-default indent-tabs-mode nil)
 
-(add-to-list 'safe-local-variable-values '(auto-recompile . t))
+(when (boundp 'safe-local-variable-values)
+  (add-to-list 'safe-local-variable-values '(auto-recompile . t)))
 
 (defvar *cjg-work-email-address* "chris.grim@nyu.edu")
 
