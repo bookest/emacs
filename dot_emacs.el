@@ -141,7 +141,14 @@ NAME converted to lowercase."
   
   (when (aquamacs-p)
     (setq default-major-mode 'fundamental-mode
-          initial-major-mode 'lisp-interaction-mode)
+          initial-major-mode 'lisp-interaction-mode
+          obof-other-frame-regexps (remove "\\*Help\\*"
+                                           obof-other-frame-regexps)
+          special-display-regexps (remove "[ ]?\\*[hH]elp.*"
+                                          special-display-regexps))
+    (add-to-list 'obof-same-frame-regexps "\\*Help\\*")
+    (add-to-list 'obof-same-frame-switching-regexps "\\*Help\\*")
+
     (cjg-disable 'cua-mode
                  'osx-key-mode
                  'one-buffer-one-frame-mode)))
