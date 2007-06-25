@@ -646,6 +646,11 @@ Checks if unsaved buffers need to be saved."
     "Insert a def statement."
     nil
     "def " _ "():")
+
+  (define-skeleton python-def-method-skeleton
+    "Insert a def statement for a method."
+    nil
+    "def " _ "(self):")
   
   (define-skeleton python-class-skeleton
     "Insert a class definition."
@@ -654,6 +659,7 @@ Checks if unsaved buffers need to be saved."
   
   (cjg-define-abbrevs python-mode-abbrev-table
     ("def" "" 'python-def-skeleton)
+    ("defm" "" 'python-def-method-skeleton)
     ("class" "" 'python-class-skeleton)
     ("__i" "__init__")
     ("__m" "__main__")
