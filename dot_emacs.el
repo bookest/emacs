@@ -75,9 +75,6 @@ NAME converted to lowercase."
   "Returns true if running under Carbon."
   (string= window-system "mac"))
 
-(defun aquamacs-p ()
-  "Returns true if running under Aquamacs."
-  (boundp 'aquamacs-version))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
@@ -139,7 +136,7 @@ NAME converted to lowercase."
 		   (cursor-color . "coral")))
       (add-to-list 'default-frame-alist elm)))
   
-  (when (aquamacs-p)
+  (when (featurep 'aquamacs)
     (setq default-major-mode 'fundamental-mode
           initial-major-mode 'lisp-interaction-mode
           obof-other-frame-regexps (remove "\\*Help\\*"
