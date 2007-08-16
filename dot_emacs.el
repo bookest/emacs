@@ -543,6 +543,7 @@ Makefile or makefile exist in the current directory."
 (autoload 'sepia-init "sepia" nil t)
 (defalias 'run-perl 'sepia-init)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tt-mode
 (autoload 'tt-mode "tt-mode")
@@ -907,18 +908,25 @@ is closer to GNU basename."
   (add-to-list 'backup-directory-alist
                (cons tramp-file-name-regexp nil)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; jabber-mode
-(cjg-eval-after-load "jabber"
-  (defface jabber-roster-user-xa
-    '((t (:foreground "pink" :weight normal :slant italic)))
-    "face for displaying extended away users"
-    :group 'jabber-faces)
-  (setq jabber-server "jabber.ncbi.nlm.nih.gov"
-        jabber-username "grim"
-        jabber-nickname "grim")
-  (jabber-activity-mode 1)
-  (jabber-mode-line-mode 1))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                                                               
+;;; jabber-mode                                                                                                                                                
+(autoload 'jabber-connect "jabber" "connect to a jabber server" t)
+(eval-after-load "jabber"
+  '(progn
+     (defface jabber-roster-user-xa
+       '((t (:foreground "pink" :weight normal :slant italic)))
+       "face for displaying extended away users"
+       :group 'jabber-faces)
+     (setq jabber-server "jive.home.nyu.edu"
+           jabber-username "cjg5"
+           jabber-nickname "grim"
+           jabber-connection-type 'ssl)
+     (jabber-activity-mode 1)
+     (jabber-mode-line-mode 1)
+     (add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
+     (add-hook 'jabber-chat-mode-hook 'flyspell-mode)))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; emacs-wiki
@@ -938,6 +946,15 @@ is closer to GNU basename."
                '("CPAN" . "http://search.cpan.org/perldoc?")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; muse
+(cjg-eval-after-load "muse"
+  (require 'muse-wiki)
+  (setq muse-project-alist '(("WikiPlanner" ("~/Plans"
+                                             :default "TaskPool"
+                                             :major-mode planner-mode
+                                             :visit-link planner-visit-link)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; planner-mode
 (autoload 'plan "planner" "Start planning the day." t)
 (autoload 'planner-create-task-from-buffer "planner" 
@@ -945,7 +962,6 @@ is closer to GNU basename."
 (autoload 'planner-create-note "planner" 
   "Create a note on the current days plan" t)
 (cjg-eval-after-load "planner"
-  (require 'emacs-wiki)
   (require 'planner-diary)
   (require 'planner-lisp)
   (require 'planner-gnus)
@@ -953,6 +969,7 @@ is closer to GNU basename."
   (require 'planner-psvn)
   (require 'planner-cyclic)
   (require 'remember-planner)
+  (require 'muse)
   
   (setq planner-carry-tasks-forward t
         planner-use-task-numbers t
@@ -960,6 +977,7 @@ is closer to GNU basename."
         planner-diary-use-diary t
         planner-psvn-log-edit-notice-commit-function t
         planner-psvn-log-edit-include-files-flag nil)
+  
   (setq planner-day-page-template 
         "* Tasks\n\n\n* Schedule\n\n\n* Diary\n\n\n* Notes\n\n\n")
   
