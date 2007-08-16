@@ -559,6 +559,9 @@ Makefile or makefile exist in the current directory."
 
 (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
 
+(cjg-define-hook-fun emacs-lisp-mode-hook
+  (substitute-pattern-with-unicode "\\<(\\(lambda\\>\\)" 'lambda))
+
 ;; these are from cliki:EditingLispCodeWithEmacs
 (cjg-define-keys emacs-lisp-mode-map
   ("C-t" . 'transpose-sexps)
