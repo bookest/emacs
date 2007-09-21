@@ -176,7 +176,9 @@ NAME converted to lowercase."
   ("C-c cc" . 'compile)
   ("C-x C-b" . 'cjg-buffer-list)
   ("RET" . 'newline-and-indent)
-  ("C-x C-m" . 'execute-extended-command))
+  ("C-x C-m" . 'execute-extended-command)
+  ("C-c l" . 'org-store-link)
+  ("C-c a" . 'org-agenda))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general functions
@@ -1092,6 +1094,10 @@ is closer to GNU basename."
                              ("weblog" . "~cjg5")))))
 
 (autoload 'weblogger-start-entry "weblogger" nil t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; org-mode
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
