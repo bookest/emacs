@@ -30,10 +30,6 @@
 
 (cjg-add-to-load-path *cjg-lisp-dirs*)
 
-;;for shame
-;(add-to-list 'load-path "~/lib/emacs/site-lisp/ngnus-0.3")
-(add-to-list 'load-path "~/lib/emacs/site-lisp/gnus-cvs/lisp")
-
 (defvar *cjg-local-config-file-name*
   (concat (getenv "HOME")
 	  "/lisp/site-lisp/site-"
