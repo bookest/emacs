@@ -57,7 +57,7 @@ NAME converted to lowercase."
 (cjg-define-domain-predicate "NCBI" "\\.ncbi\\.nlm\\.nih\\.gov$")
 (cjg-define-domain-predicate "NYU" "\\.nyu\\.edu")
 
-(defalias 'at-work-p 'cjg-at-nyu-p)
+(defalias 'at-work-p 'cjg-at-ncbi-p)
 
 (defun cjg-at-home-p ()
   "Returns true if running Emacs at home."
@@ -116,7 +116,7 @@ NAME converted to lowercase."
 (when (boundp 'safe-local-variable-values)
   (add-to-list 'safe-local-variable-values '(auto-recompile . t)))
 
-(defvar *cjg-work-email-address* "chris.grim@nyu.edu")
+(defvar *cjg-work-email-address* "grimc@ncbi.nlm.nih.gov")
 
 (when (at-work-p)
   (setq user-mail-address *cjg-work-email-address*))
@@ -135,10 +135,9 @@ NAME converted to lowercase."
   (when (featurep 'aquamacs)
     (setq default-major-mode 'fundamental-mode
           initial-major-mode 'lisp-interaction-mode
-          obof-other-frame-regexps (remove "\\*Help\\*"
-                                           obof-other-frame-regexps)
-          special-display-regexps (remove "[ ]?\\*[hH]elp.*"
-                                          special-display-regexps))
+          obof-other-frame-regexps nil
+          special-display-regexps nil)
+    
     (add-to-list 'obof-same-frame-regexps "\\*Help\\*")
     (add-to-list 'obof-same-frame-switching-regexps "\\*Help\\*")
 
