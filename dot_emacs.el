@@ -151,7 +151,7 @@ NAME converted to lowercase."
 (defmacro cjg-define-global-keys (&rest bindings)
   "Define one or more keybindings in the global map."
   `(cjg-define-keys (current-global-map) ,@bindings))
-(put 'cjg-define-global-keys 'lisp-indent-function 1)
+(put 'cjg-define-global-keys 'lisp-indent-function 'defun)
 
 (defmacro cjg-define-keys (map &rest bindings)
   "Define one or more key bindings in MAP."
@@ -161,7 +161,7 @@ NAME converted to lowercase."
        ,@(mapcar (lambda (elt)
                    `(define-key ,keymap (kbd ,(car elt)) ,(cdr elt)))
                  bindings))))
-(put 'cjg-define-keys 'lisp-indent-function 1)
+(put 'cjg-define-keys 'lisp-indent-function 'defun)
 
 (cjg-define-global-keys
   ("%" . 'cjg-match-paren)
@@ -173,7 +173,10 @@ NAME converted to lowercase."
   ("RET" . 'newline-and-indent)
   ("C-x C-m" . 'execute-extended-command)
   ("C-c l" . 'org-store-link)
-  ("C-c a" . 'org-agenda))
+  ("C-c a" . 'org-agenda)
+  ("C-S-y" . 'clipboard-yank)
+  ("C-S-w" . 'clipboard-kill-region)
+  ("M-W"   . 'clipboard-kill-ring-save))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general functions
