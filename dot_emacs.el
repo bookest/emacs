@@ -285,14 +285,14 @@ Stolen and modified from the original version found at
                  abbrevs))))
 (put 'cjg-define-abbrevs 'lisp-indent-function 1)
 
-(defmacro cjg-define-hook-fun (hook &rest body)
+(defmacro cjg-add-hook (hook &rest body)
   (let ((fun (intern (concat "cjg-"
                              (symbol-name hook)))))
     `(progn
        (defun ,fun ()
          (progn ,@body))
        (add-hook ',hook ',fun))))
-(put 'cjg-define-hook-fun 'lisp-indent-function 1)
+(put 'cjg-add-hook 'lisp-indent-function 1)
 
 (defmacro cjg-eval-after-load (file &rest body)
   "Evaluates `BODY' after `FILE' has been loaded.
@@ -495,7 +495,7 @@ Makefile or makefile exist in the current directory."
     (concat "perl -cw " 
             (file-name-nondirectory buffer-file-name)))
   
-  (cjg-define-hook-fun cperl-mode-hook
+  (cjg-add-hook cperl-mode-hook
     (cjg:cperl-set-compile-command)
     (cjg-enable 'auto-insert-mode
                 'abbrev-mode)
@@ -582,7 +582,7 @@ Makefile or makefile exist in the current directory."
 
 (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
 
-(cjg-define-hook-fun emacs-lisp-mode-hook
+(cjg-add-hook emacs-lisp-mode-hook
   (substitute-pattern-with-unicode "\\<(\\(lambda\\>\\)" 'lambda))
 
 ;; these are from cliki:EditingLispCodeWithEmacs
@@ -617,7 +617,7 @@ Makefile or makefile exist in the current directory."
     (concat "bash -n "
             (file-name-nondirectory buffer-file-name)))
 
-  (cjg-define-hook-fun sh-mode-hook
+  (cjg-add-hook sh-mode-hook
     (cjg:sh-set-compile-command)
     (cjg-enable 'abbrev-mode)
     (flyspell-prog-mode)))
@@ -659,7 +659,7 @@ Makefile or makefile exist in the current directory."
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 
 (cjg-eval-after-load "ruby-mode"
-  (cjg-define-hook-fun ruby-mode-hook
+  (cjg-add-hook ruby-mode-hook
     (cjg-enable 'ruby-electric-mode)
     (flyspell-prog-mode))
      
@@ -692,7 +692,7 @@ Makefile or makefile exist in the current directory."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-mode
 (cjg-eval-after-load "python"
-  (cjg-define-hook-fun python-mode-hook
+  (cjg-add-hook python-mode-hook
     (cjg-enable 'abbrev-mode
                 'outline-minor-mode)
     (turn-on-eldoc-mode)
@@ -819,7 +819,7 @@ Adds the display of the current time in 24 hour format."
   (setq eshell-scroll-show-maximum-output t
         eshell-scroll-to-bottom-on-output nil)
   
-  (cjg-define-hook-fun eshell-mode-hook
+  (cjg-add-hook eshell-mode-hook
     (add-to-list 'eshell-output-filter-functions
                  'eshell-postoutput-scroll-to-bottom))
   
@@ -891,7 +891,7 @@ is closer to GNU basename."
   (add-to-list 'w3m-uri-replace-alist 
                '("\\`cpan:" w3m-search-uri-replace "search-cpan"))
   
-  (cjg-define-hook-fun w3m-mode-hook
+  (cjg-add-hook w3m-mode-hook
     (w3m-toggle-inline-images t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1014,14 +1014,14 @@ is closer to GNU basename."
   (setq remember-handler-functions '(remember-planner-append)
         remember-annotation-functions planner-annotation-functions)
   
-  (cjg-define-hook-fun planner-mode-hook
+  (cjg-add-hook planner-mode-hook
     (cjg-disable 'flyspell-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember
 (autoload 'remember "remember" nil t)
 (cjg-eval-after-load "remember"
-  (cjg-define-hook-fun remember-mode-hook
+  (cjg-add-hook remember-mode-hook
     (cjg-enable 'flyspell-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1071,13 +1071,13 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; message-mode
 (cjg-eval-after-load "message"
-  (cjg-define-hook-fun message-mode-hook
+  (cjg-add-hook message-mode-hook
     (cjg-enable 'flyspell-mode
                 'footnote-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; text-mode
-(cjg-define-hook-fun text-mode-hook
+(cjg-add-hook text-mode-hook
   (cjg-enable 'flyspell-mode
               'footnote-mode))
 
