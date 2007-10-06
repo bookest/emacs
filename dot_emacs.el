@@ -340,6 +340,29 @@ The current selected frame is moved if FRAME is NIL."
   (interactive)
   (cjg-set-frame-position frame -1 0))
 
+(defun cjg-display-char-height ()
+  "Return the height of the display in characters."
+  (- (/ (display-pixel-height) (frame-char-height)) 3))
+
+(defun cjg-display-char-width ()
+  "Return the width of the display in characters."
+  (/ (display-pixel-width) (frame-char-width)))
+
+(defun cjg-maximize-frame ()
+  "Maximize the current frame."
+  (interactive)
+  (cjg-move-frame-upper-left)
+  (set-frame-size (selected-frame)
+                  (cjg-display-char-width)
+                  (cjg-display-char-height)))
+
+(defun cjg-half-screen-frame ()
+  "Make the current frame half the size of the display."
+  (interactive)
+  (set-frame-size (selected-frame)
+                  (/ (cjg-display-char-width) 2)
+                  (cjg-display-char-height)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; unicode prettiness
 (defvar unicode-symbol-alist
