@@ -63,11 +63,11 @@ NAME converted to lowercase."
   "Returns true if running Emacs at home."
   (not (at-work-p)))
 
-(defun macosx-p ()
-  "Return true if this Emacs is running on MacOSX."
+(defun osxp ()
+  "Return true if this Emacs is running on MacOS X."
   (string= system-type "darwin"))
 
-(defun carbon-p ()
+(defun carbonp ()
   "Returns true if running under Carbon."
   (string= window-system "mac"))
 
@@ -123,10 +123,10 @@ NAME converted to lowercase."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; macosx specific config
-(when (macosx-p)
+(when (osxp)
   (setq mac-command-modifier 'meta)
 
-  (when (carbon-p)			; set color scheme for Carbon
+  (when (carbonp)			; set color scheme for Carbon
     (dolist (elm '((foreground-color . "white")
 		   (background-color . "black")
 		   (cursor-color . "coral")))
