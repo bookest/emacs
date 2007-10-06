@@ -90,7 +90,9 @@ NAME converted to lowercase."
             'line-number-mode
             'show-paren-mode
             'ido-mode
-            'which-function-mode)
+            'ido-everywhere
+            'which-function-mode
+            'partial-completion-mode)
 
 (cjg-disable 'scroll-bar-mode
              'tool-bar-mode
