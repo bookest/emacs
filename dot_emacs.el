@@ -784,7 +784,8 @@ Checks if unsaved buffers need to be saved."
   (cjg-add-hook haskell-mode-hook
     (turn-on-haskell-decl-scan)
     (turn-on-haskell-doc-mode)
-    (turn-on-haskell-indent))
+    (turn-on-haskell-indent)
+    (flyspell-prog-mode))
   
   (add-to-list 'which-func-modes 'haskell-mode)
   (add-to-list 'which-func-modes 'literate-haskell-mode))
