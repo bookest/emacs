@@ -770,6 +770,25 @@ Checks if unsaved buffers need to be saved."
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; haskell-mode
+(autoload 'haskell-mode "haskell-mode" "Major mode for editing Haskell." t)
+(autoload 'literate-haskell-mode "haskell-mode"
+  "Major mode for editing literate Haskell." t)
+
+(add-to-list 'auto-mode-alist '("\\.[hg]s$"  . haskell-mode))
+(add-to-list 'auto-mode-alist '("\\.hi$"     . haskell-mode))
+(add-to-list 'auto-mode-alist '("\\.l[hg]s$" . literate-haskell-mode))
+
+(cjg-eval-after-load "haskell-mode"
+  (cjg-add-hook haskell-mode-hook
+    (turn-on-haskell-decl-scan)
+    (turn-on-haskell-doc-mode)
+    (turn-on-haskell-indent))
+  
+  (add-to-list 'which-func-modes 'haskell-mode)
+  (add-to-list 'which-func-modes 'literate-haskell-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; viper-mode
 ;; this should be moved to dot_viper.el
