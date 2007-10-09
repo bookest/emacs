@@ -492,7 +492,8 @@ Makefile or makefile exist in the current directory."
     (cjg-define-abbrevs cperl-mode-abbrev-table
       ("__p" "__PACKAGE__")
       ("__d" "__DATA__")
-      ("__e" "__END__")))
+      ("__e" "__END__")
+      ("dbg" 'perl-debug-skeleton)))
   
   (cjg-define-compile-command cjg:cperl-set-compile-command
     (concat "perl -cw " 
@@ -539,6 +540,12 @@ Makefile or makefile exist in the current directory."
     "\n" _ "\n"
     "\n"
     "__END__\n")
+
+  (define-skeleton perl-debug-skeleton
+    "Inserts a debug statement."
+    nil
+    "use Data::Dumper; warn Dumper(" _ ");")
+  
   (define-auto-insert 'cperl-mode 'perl-script-skeleton t)
 
   (defun cjg-cperl-eldoc-documentation-function ()
@@ -1142,6 +1149,8 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(cjg-eval-after-load "org-mode"
+  (setq org-log-done t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
