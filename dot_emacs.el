@@ -551,7 +551,19 @@ Makefile or makefile exist in the current directory."
   (defun cjg-cperl-eldoc-documentation-function ()
     "Return doc string for `eldoc-mode'."
     (let ((cperl-message-on-help-error nil))
-      (car (cperl-get-help)))))
+      (car (cperl-get-help))))
+
+  (defun cjg-perl-insert-no-critic ()
+    "Insert the magic comment to disable perlcritic checks for the current line."
+    (interactive)
+    (save-excursion
+      (let ((comment-start "##"))
+        (indent-for-comment)
+        (insert " no critic")
+        (indent-according-to-mode))))
+
+  (cjg-define-keys cperl-mode-map
+    ("C-c nc" . 'cjg-perl-insert-no-critic)))
 
 (defun perldoc (args)
   "Like man, but use perldoc instead."
