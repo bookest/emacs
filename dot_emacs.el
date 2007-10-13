@@ -562,8 +562,26 @@ Makefile or makefile exist in the current directory."
         (insert " no critic")
         (indent-according-to-mode))))
 
+  (defun cjg-perl-toggle-test-plan ()
+    "Toggle the Test::More plan in the current buffer.
+
+This is a modified version of something I stole from perlmonks."
+    (interactive)
+    (let ((plan-pos))
+      (save-excursion
+        (save-match-data
+          (goto-char (point-min))
+          (cond ((re-search-forward "More[ \t]+tests[ \t]*=>[ \t]*" nil t)
+                 (replace-match "More 'no_plan'; # tests => " t t))
+                ((re-search-forward "More[ \t]+'no_plan';[ \t]*#[ \t]*" nil t)
+                 (replace-match "More " t t)
+                 (setq plan-pos (or (re-search-forward "[0-9]+" nil t)
+                                    (point)))))))
+      (when plan-pos (goto-char plan-pos))))
+  
   (cjg-define-keys cperl-mode-map
-    ("C-c nc" . 'cjg-perl-insert-no-critic)))
+    ("C-c nc" . 'cjg-perl-insert-no-critic)
+    ("C-c tp" . 'cjg-perl-toggle-test-plan)))
 
 (defun perldoc (args)
   "Like man, but use perldoc instead."
