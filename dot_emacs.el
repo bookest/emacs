@@ -578,10 +578,35 @@ This is a modified version of something I stole from perlmonks."
                  (setq plan-pos (or (re-search-forward "[0-9]+" nil t)
                                     (point)))))))
       (when plan-pos (goto-char plan-pos))))
-  
+
+  (defun cjg-perl-find-test-plan ()
+    (goto-char (point-min))
+    (re-search-forward "More[ \t]+tests[ \t]*=>[ \t]*\\([0-9]+\\)[ \t]*;" nil t))
+
+  (defun cjg-perl-increment-test-plan (arg)
+    (interactive "p")
+    (save-excursion
+      (save-match-data
+        (if (cjg-perl-find-test-plan)
+            (let* ((plan (string-to-number (match-string 1))))
+              (replace-match (number-to-string (+ plan arg)) nil nil nil 1))
+          (message "no plan")))))
+
+  (defun cjg-perl-set-test-plan (arg)
+    (interactive "Nplan: ")
+    (when (< arg 0)
+      (error "plan must be greater than or equal to one."))
+    (save-excursion
+      (save-match-data
+        (if (cjg-perl-find-test-plan)
+            (replace-match (number-to-string arg) nil nil nil 1)
+          (message "no plan")))))
+
   (cjg-define-keys cperl-mode-map
     ("C-c nc" . 'cjg-perl-insert-no-critic)
-    ("C-c tp" . 'cjg-perl-toggle-test-plan)))
+    ("C-c tp" . 'cjg-perl-toggle-test-plan)
+    ("C-c ip" . 'cjg-perl-increment-test-plan)
+    ("C-c sp" . 'cjg-perl-set-test-plan)))
 
 (defun perldoc (args)
   "Like man, but use perldoc instead."
