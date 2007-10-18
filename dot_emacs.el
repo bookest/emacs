@@ -1129,7 +1129,20 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vc
-;(add-to-list 'vc-handled-backends 'DARCS) ;setup vc-darcs
+(let ((cjg-vc-backends '(("vc-darcs" . DARCS)
+                         ("vc-git"    . GIT))))
+  (dolist (elm cjg-vc-backends)
+    (when (locate-library (car elm))
+      (add-to-list 'vc-handled-backends (cdr elm)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; psvn
+(autoload 'svn-examine "psvn" nil t )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; git
+(autoload 'git-blame-mode "git-blame" "Minor mode for Git incremental blame." t)
+(autoload 'git-status "git" nil t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ediff
@@ -1188,10 +1201,6 @@ is closer to GNU basename."
   (setq ido-slow-ftp-host-regexps '(".*")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; psvn
-(autoload 'svn-examine "psvn" nil t )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; weblogger
 (cjg-eval-after-load "weblogger"
   (setq weblogger-blogger-firstline-title t)
@@ -1210,7 +1219,6 @@ is closer to GNU basename."
         org-mode-hide-leading-stars t
         org-mode-odd-levels-only t))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (server-start)
 
