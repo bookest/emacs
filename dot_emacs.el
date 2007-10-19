@@ -1189,7 +1189,7 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mouse-avoidance-mode
 (when (display-mouse-p)
-  (when (osxp)
+  (when (not (osxp))
     (defun mouse-avoidance-banish-destination ()
       (let ((edges (window-edges)))
         (cons (nth 2 edges)
