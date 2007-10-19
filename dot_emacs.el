@@ -1202,17 +1202,6 @@ is closer to GNU basename."
   (setq ido-slow-ftp-host-regexps '(".*")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; weblogger
-(cjg-eval-after-load "weblogger"
-  (setq weblogger-blogger-firstline-title t)
-  (weblogger-config-alist '(("NYU"
-                             ("user" . "cjg5")
-                             ("server-url" . "https://jira.home.nyu.edu:8443/confluence/rpc/xmlrpc")
-                             ("weblog" . "~cjg5")))))
-
-(autoload 'weblogger-start-entry "weblogger" nil t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (cjg-eval-after-load "org-mode"
