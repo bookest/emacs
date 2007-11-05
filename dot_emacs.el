@@ -1204,7 +1204,7 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(cjg-eval-after-load "org-mode"
+(cjg-eval-after-load "org"
   (setq org-log-done t
         org-mode-hide-leading-stars t
         org-mode-odd-levels-only t)
