@@ -1210,8 +1210,8 @@ is closer to GNU basename."
         org-mode-odd-levels-only t)
   (setq org-link-abbrev-alist
         '(("org" . "file:~/org/")
-          ("rt" . "https://rt3.be-md.ncbi.nlm.nih.gov/rt3/Ticket/Display.html?id=%s"))))
-
+          ("rt" . "https://rt3.be-md.ncbi.nlm.nih.gov/rt3/Ticket/Display.html?id=%s")
+          ("cpan" . "http://search.cpan.org/perldoc?%s"))))
 
 
 (server-start)
