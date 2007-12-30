@@ -500,14 +500,7 @@ Makefile or makefile exist in the current directory."
         cperl-invalid-face nil
         cperl-under-as-char t
         cperl-indent-level 2)
-  
-  (when (not (null cperl-mode-abbrev-table))
-    (cjg-define-abbrevs cperl-mode-abbrev-table
-      ("__p" "__PACKAGE__")
-      ("__d" "__DATA__")
-      ("__e" "__END__")
-      ("dbg" 'perl-debug-skeleton)))
-  
+    
   (cjg-define-compile-command cjg:cperl-set-compile-command
     (concat "perl -cw " 
             (file-name-nondirectory buffer-file-name)))
@@ -516,10 +509,18 @@ Makefile or makefile exist in the current directory."
     (cjg:cperl-set-compile-command)
     (cjg-enable 'auto-insert-mode
                 'abbrev-mode)
+
     (flyspell-prog-mode)
     (turn-on-eldoc-mode)
+
     (set (make-local-variable 'eldoc-documentation-function)
-         'cjg-cperl-eldoc-documentation-function))
+         'cjg-cperl-eldoc-documentation-function)
+
+    (cjg-define-abbrevs local-abbrev-table
+      ("__p" "__PACKAGE__")
+      ("__d" "__DATA__")
+      ("__e" "__END__")
+      ("dbg" 'perl-debug-skeleton)))
 
   (define-skeleton perl-module-skeleton
     "Inserts a skeleton Perl module into the current buffer."
