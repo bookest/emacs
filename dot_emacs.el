@@ -304,6 +304,19 @@ See `eval-after-load'."
      '(progn ,@body)))
 (put 'cjg-eval-after-load 'lisp-indent-function 1)
 
+(defun cjg-term ()
+  "Spawn a new terminal.
+
+If running under a GUI the terminal will be created in a new
+maximized frame."
+  (interactive)
+  (when window-system
+    (let ((frame (make-frame)))
+      (select-frame frame)
+      (cjg-maximize-frame)))
+  (cd (getenv "HOME"))
+  (term "/bin/bash"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; window and frame manipulations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
