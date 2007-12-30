@@ -744,6 +744,9 @@ This is a modified version of something I stole from perlmonks."
   (cjg-define-keys ruby-mode-map
     ("RET" . 'ruby-reindent-then-newline-and-indent))
 
+  (inf-ruby-keys)
+  (add-to-list 'which-func-modes 'ruby-mode)
+
   (defun xmp ()
     (interactive)
     (let ((line (current-line))
@@ -762,10 +765,7 @@ This is a modified version of something I stole from perlmonks."
              (re-search-forward "^context.+do$" nil t))
            "ruby -S xmpfilter.rb --spec")
           (t
-           "ruby -S xmpfilter.rb")))
-  
-  (inf-ruby-keys)
-  (add-to-list 'which-func-modes 'ruby-mode))
+           "ruby -S xmpfilter.rb"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-mode
