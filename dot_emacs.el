@@ -655,14 +655,13 @@ This is a modified version of something I stole from perlmonks."
 ;;; emacs-lisp-mode
 (autoload 'turn-on-eldoc-mode "eldoc" nil t) 
 
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-
-(add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
-
 (cjg-add-hook emacs-lisp-mode-hook
+  (turn-on-eldoc-mode)
+  (flyspell-prog-mode)
   (substitute-pattern-with-unicode "\\<(\\(lambda\\>\\)" 'lambda))
+
+(add-hook 'lisp-interaction-mode-hook 'cjg-emacs-lisp-mode-hook)
+(add-hook 'ielm-mode-hook 'cjg-emacs-lisp-mode-hook)
 
 ;; these are from cliki:EditingLispCodeWithEmacs
 (cjg-define-keys emacs-lisp-mode-map
