@@ -585,8 +585,8 @@ This is a modified version of something I stole from perlmonks."
         (save-match-data
           (goto-char (point-min))
           (cond ((re-search-forward "More[ \t]+tests[ \t]*=>[ \t]*" nil t)
-                 (replace-match "More 'no_plan'; # tests => " t t))
-                ((re-search-forward "More[ \t]+'no_plan';[ \t]*#[ \t]*" nil t)
+                 (replace-match "More qw(no_plan); # tests => " t t))
+                ((re-search-forward "More[ \t]+qw(no_plan);[ \t]*#[ \t]*" nil t)
                  (replace-match "More " t t)
                  (setq plan-pos (or (re-search-forward "[0-9]+" nil t)
                                     (point)))))))
