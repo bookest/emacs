@@ -1223,7 +1223,7 @@ is closer to GNU basename."
         org-mode-odd-levels-only t
         org-return-follows-link t)
   (setq org-link-abbrev-alist
-        '(("org" . "file:~/org/")
+        '(("org" . "file:~/Documents/org/")
           ("rt" . "https://rt3.be-md.ncbi.nlm.nih.gov/rt3/Ticket/Display.html?id=%s")
           ("cpan" . "http://search.cpan.org/perldoc?%s"))))
 
