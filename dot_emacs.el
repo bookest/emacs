@@ -1109,10 +1109,7 @@ is closer to GNU basename."
   (planner-diary-insinuate)
   (planner-calendar-insinuate)
   (planner-gnus-insinuate)
-  
-  (setq remember-handler-functions '(remember-planner-append)
-        remember-annotation-functions planner-annotation-functions)
-  
+    
   (cjg-add-hook planner-mode-hook
     (cjg-disable 'flyspell-mode)))
 
@@ -1120,8 +1117,11 @@ is closer to GNU basename."
 ;;; remember
 (autoload 'remember "remember" nil t)
 (cjg-eval-after-load "remember"
+  (setq remember-annotation-functions '(org-remember-annotation)
+        remember-handler-functions '(org-remember-handler))
   (cjg-add-hook remember-mode-hook
-    (cjg-enable 'flyspell-mode)))
+    (cjg-enable 'flyspell-mode)
+    (org-remember-apply-template)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bbdb
@@ -1144,7 +1144,7 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vc
 (let ((cjg-vc-backends '(("vc-darcs" . DARCS)
-                         ("vc-git"    . GIT))))
+                         ("vc-git"   . GIT))))
   (dolist (elm cjg-vc-backends)
     (when (locate-library (car elm))
       (add-to-list 'vc-handled-backends (cdr elm)))))
@@ -1221,7 +1221,9 @@ is closer to GNU basename."
   (setq org-log-done t
         org-mode-hide-leading-stars t
         org-mode-odd-levels-only t
-        org-return-follows-link t)
+        org-return-follows-link t
+        org-directory "~/Documents/org/"
+        org-default-notes-file (concat org-directory "notes.org"))
   (setq org-link-abbrev-alist
         '(("org" . "file:~/Documents/org/")
           ("rt" . "https://rt3.be-md.ncbi.nlm.nih.gov/rt3/Ticket/Display.html?id=%s")
