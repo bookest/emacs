@@ -1225,7 +1225,8 @@ is closer to GNU basename."
   (setq org-link-abbrev-alist
         '(("org" . "file:~/Documents/org/")
           ("rt" . "https://rt3.be-md.ncbi.nlm.nih.gov/rt3/Ticket/Display.html?id=%s")
-          ("cpan" . "http://search.cpan.org/perldoc?%s"))))
+          ("cpan" . "http://search.cpan.org/perldoc?%s")
+          ("jira" . "http://jira.be-md.ncbi.nlm.nih.gov/browse/%s"))))
 
 
 (server-start)
