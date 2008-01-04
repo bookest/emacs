@@ -1220,7 +1220,8 @@ is closer to GNU basename."
 (cjg-eval-after-load "org"
   (setq org-log-done t
         org-mode-hide-leading-stars t
-        org-mode-odd-levels-only t)
+        org-mode-odd-levels-only t
+        org-return-follows-link t)
   (setq org-link-abbrev-alist
         '(("org" . "file:~/org/")
           ("rt" . "https://rt3.be-md.ncbi.nlm.nih.gov/rt3/Ticket/Display.html?id=%s")
