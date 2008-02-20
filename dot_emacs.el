@@ -499,7 +499,9 @@ Makefile or makefile exist in the current directory."
         cperl-electric-parens nil
         cperl-invalid-face nil
         cperl-under-as-char t
-        cperl-indent-level 2)
+        cperl-indent-level 2
+        cperl-indent-parens-as-block t
+        cperl-close-paren-offset -2)
     
   (cjg-define-compile-command cjg:cperl-set-compile-command
     (concat "perl -cw " 
