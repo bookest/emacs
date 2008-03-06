@@ -501,7 +501,8 @@ Makefile or makefile exist in the current directory."
         cperl-under-as-char t
         cperl-indent-level 2
         cperl-indent-parens-as-block t
-        cperl-close-paren-offset -2)
+        cperl-close-paren-offset -2
+        cperl-label-offset 0)
     
   (cjg-define-compile-command cjg:cperl-set-compile-command
     (concat "perl -cw " 
