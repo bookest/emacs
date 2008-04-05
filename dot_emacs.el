@@ -692,17 +692,36 @@ This is a modified version of something I stole from perlmonks."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; sh-mode
 (cjg-eval-after-load "sh-script"
-    (setq sh-basic-offset 4)
+  (setq sh-basic-offset 4)
 
   (cjg-define-compile-command cjg:sh-set-compile-command
     (concat "bash -n "
             (file-name-nondirectory buffer-file-name)))
 
+  (when (require 'flymake t)
+    (defun cjg-shell-flymake-init ()
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        `("bash" ("-n" ,local-file))))
+    
+    (defvar cjg-flymake-shell-err-line-pattern
+      '("^\\(.+\\): line \\([0-9]+\\): \\(.+\\)$" 1 2 nil 3))
+    
+    (push cjg-flymake-shell-err-line-pattern flymake-err-line-patterns)
+  
+    (push '(".+\\.sh$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
+    (push '("bashrc$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
+    (push '("bash_profile$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
+    (push '("bash_logout$" cjg-shell-flymake-init) flymake-allowed-file-name-masks))
+    
   (cjg-add-hook sh-mode-hook
     (cjg:sh-set-compile-command)
     (cjg-enable 'abbrev-mode)
     (flyspell-prog-mode)))
-
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C-mode
 (setq c-basic-offset 8)
