@@ -491,6 +491,10 @@ with flymake."
 
 (put 'cjg-with-flymake-tempfile 'lisp-indent-function 1)
 
+(cjg-eval-after-load "flymake"
+  (face-spec-set 'flymake-errline '((t (:underline "OrangeRed")))  nil)
+  (face-spec-set 'flymake-warnline '((t (:underline "yellow")))  nil))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; font-lock-mode
 (require 'font-lock)
