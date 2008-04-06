@@ -477,6 +477,20 @@ Makefile or makefile exist in the current directory."
 	    (progn ,@body)))))
 
 (put 'cjg-define-compile-command 'lisp-indent-function 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; flymake
+
+(defmacro cjg-with-flymake-tempfile (var &rest body)
+  "Evaluate BODY with VAR bound to a tempfile suitable for use
+with flymake."
+  `(let ((,var (file-relative-name (flymake-init-create-temp-buffer-copy
+                                    'flymake-create-temp-inplace)
+                                   (file-name-directory buffer-file-name))))
+     ,@body))
+
+(put 'cjg-with-flymake-tempfile 'lisp-indent-function 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; font-lock-mode
 (require 'font-lock)
