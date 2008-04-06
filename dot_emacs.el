@@ -712,7 +712,7 @@ This is a modified version of something I stole from perlmonks."
     (concat "bash -n "
             (file-name-nondirectory buffer-file-name)))
 
-  (when (require 'flymake t)
+  (when (require 'flymake nil t)
     (defun cjg-shell-flymake-init ()
       (cjg-with-flymake-tempfile local-file
         `("bash" ("-n" ,local-file))))
