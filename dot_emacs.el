@@ -783,6 +783,19 @@ This is a modified version of something I stole from perlmonks."
   (inf-ruby-keys)
   (add-to-list 'which-func-modes 'ruby-mode)
 
+  (when (require 'flymake nil t)
+    (defun flymake-ruby-init ()
+      (cjg-with-flymake-tempfile local-file
+        `("ruby" ("-c" ,local-file))))
+
+    (defvar cjg-ruby-flymake-err-line-patterns
+      '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3))
+    
+    (push cjg-ruby-flymake-err-line-patterns flymake-err-line-patterns)
+    
+    (push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
+    (push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks))
+  
   (defun xmp ()
     (interactive)
     (let ((line (current-line))
