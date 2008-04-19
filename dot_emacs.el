@@ -541,7 +541,8 @@ with flymake."
       ("__p" "__PACKAGE__")
       ("__d" "__DATA__")
       ("__e" "__END__")
-      ("dbg" "" 'perl-debug-skeleton)))
+      ("dbg" "" 'perl-debug-skeleton)
+      ("subm" "" 'perl-method-skeleton)))
 
   (define-skeleton perl-module-skeleton
     "Inserts a skeleton Perl module into the current buffer."
@@ -575,13 +576,19 @@ with flymake."
     "\n" _ "\n"
     "\n"
     "__END__\n")
+  (define-auto-insert 'cperl-mode 'perl-script-skeleton t)
 
   (define-skeleton perl-debug-skeleton
     "Inserts a debug statement."
     nil
     "use Data::Dumper; warn Dumper(" _ ");")
-  
-  (define-auto-insert 'cperl-mode 'perl-script-skeleton t)
+
+  (define-skeleton perl-method-skeleton
+    "Inserts a skeleton method."
+    nil
+    "sub " _ " {\n"
+    > "my ($self) = @_;\n"
+    "}\n")
 
   (defun cjg-cperl-eldoc-documentation-function ()
     "Return doc string for `eldoc-mode'."
