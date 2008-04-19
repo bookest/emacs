@@ -542,7 +542,8 @@ with flymake."
       ("__d" "__DATA__")
       ("__e" "__END__")
       ("dbg" "" 'perl-debug-skeleton)
-      ("subm" "" 'perl-method-skeleton)))
+      ("subm" "" 'perl-method-skeleton)
+      ("hasm" "" 'moose-has-skeleton)))
 
   (define-skeleton perl-module-skeleton
     "Inserts a skeleton Perl module into the current buffer."
@@ -589,6 +590,14 @@ with flymake."
     "sub " _ " {\n"
     > "my ($self) = @_;\n"
     "}\n")
+
+  (define-skeleton moose-has-skeleton
+    "Inserts a skeleton has statement"
+    nil
+    "has '" _ "' => (\n"
+    > "is  => 'ro',\n"
+    > "isa => 'Str',\n"
+    ");\n")
 
   (defun cjg-cperl-eldoc-documentation-function ()
     "Return doc string for `eldoc-mode'."
