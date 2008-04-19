@@ -541,7 +541,7 @@ with flymake."
       ("__p" "__PACKAGE__")
       ("__d" "__DATA__")
       ("__e" "__END__")
-      ("dbg" 'perl-debug-skeleton)))
+      ("dbg" "" 'perl-debug-skeleton)))
 
   (define-skeleton perl-module-skeleton
     "Inserts a skeleton Perl module into the current buffer."
