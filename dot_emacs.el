@@ -1277,7 +1277,8 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ido
 (cjg-eval-after-load "ido"
-  (setq ido-slow-ftp-host-regexps '(".*")))
+  (setq ido-slow-ftp-host-regexps '(".*")
+        ido-enable-flex-matching t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode
