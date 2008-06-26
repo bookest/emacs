@@ -800,6 +800,8 @@ This is a modified version of something I stole from perlmonks."
   (inf-ruby-keys)
   (add-to-list 'which-func-modes 'ruby-mode)
 
+  (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)
+
   (when (require 'flymake nil t)
     (defun flymake-ruby-init ()
       (cjg-with-flymake-tempfile local-file
