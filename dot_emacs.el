@@ -784,6 +784,7 @@ This is a modified version of something I stole from perlmonks."
 (autoload 'run-ruby "inf-ruby" nil t)
 (autoload 'inf-ruby-keys "inf-ruby" nil t)
 (autoload 'ruby-electric-mode "ruby-electric" nil t)
+(autoload 'ri "ri-ruby" nil t)
 
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
@@ -834,6 +835,9 @@ This is a modified version of something I stole from perlmonks."
            "ruby -S xmpfilter.rb --spec")
           (t
            "ruby -S xmpfilter.rb"))))
+
+(cjg-eval-after-load "ri-ruby"
+  (setq ri-ruby-script (expand-file-name "~/lib/emacs/bin/ri-emacs.rb")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-mode
