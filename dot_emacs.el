@@ -1303,6 +1303,19 @@ is closer to GNU basename."
           ("cpan" . "http://search.cpan.org/perldoc?%s")
           ("jira" . "http://jira.be-md.ncbi.nlm.nih.gov/browse/%s"))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; fit-frame
+(cjg-eval-after-load "fit-frame"
+  ;; disable fit-frame
+  (setq fit-frame-inhibit-fitting-flag t)) 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; anything
+(autoload 'anything "anything" nil t)
+
+(cjg-eval-after-load "anything"
+  (setq anything-samewindow t)
+  (require 'anything-config nil t))
 
 (server-start)
 
