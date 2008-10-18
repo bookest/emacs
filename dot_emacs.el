@@ -25,7 +25,7 @@
     (load file)))
 
 (defvar *cjg-lisp-dirs*
-  '("~/lib/emacs" "~/lib/emacs/site-lisp")
+  '("~/lib/emacs" "~/lib/emacs/site-lisp" "~/lib/emacs/vendor")
   "Directories to check for locally installed lisp")
 
 (cjg-add-to-load-path *cjg-lisp-dirs*)
