@@ -167,7 +167,6 @@ NAME converted to lowercase."
 (put 'cjg-define-keys 'lisp-indent-function 'defun)
 
 (cjg-define-global-keys
-  ("%" . 'cjg-match-paren)
   ("C-c o" .  'occur)
   ("C-c g" . 'goto-line)
   ("C-c #" . 'comment-or-uncomment-region)
@@ -183,19 +182,6 @@ NAME converted to lowercase."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general functions
-(defun cjg-match-paren (arg)
-  "Go to the matching paren if on a paren; otherwise insert %.
-Very blasphemous."
-  (interactive "p")
-  (let ((current-syntax (char-syntax (char-after (point)))))
-    (cond ((equal current-syntax ?\()
-           (forward-list 1)
-           (backward-char 1))
-          ((equal current-syntax ?\))
-           (forward-char 1)
-           (backward-list 1))
-          (t (self-insert-command (or arg 1))))))
-  
 (defun cjg-create-scratch-buffer ()
   "Recreate a killed scratch buffer, complete with banner.
 
