@@ -172,7 +172,7 @@ NAME converted to lowercase."
   ("C-c g" . 'goto-line)
   ("C-c #" . 'comment-or-uncomment-region)
   ("C-c cc" . 'compile)
-  ("C-x C-b" . 'cjg-buffer-list)
+  ("C-x C-b" . 'ibuffer)
   ("RET" . 'newline-and-indent)
   ("C-x C-m" . 'execute-extended-command)
   ("C-c l" . 'org-store-link)
@@ -196,12 +196,6 @@ Very blasphemous."
            (backward-list 1))
           (t (self-insert-command (or arg 1))))))
   
-(defun cjg-buffer-list (&optional files-only)
-  (interactive "P")
-  (let ((b (list-buffers-noselect files-only)))
-    (display-buffer b)
-    (pop-to-buffer b)))
-
 (defun cjg-create-scratch-buffer ()
   "Recreate a killed scratch buffer, complete with banner.
 
@@ -1316,6 +1310,23 @@ is closer to GNU basename."
 (cjg-eval-after-load "anything"
   (setq anything-samewindow t)
   (require 'anything-config nil t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ibuffer
+(autoload 'ibuffer "ibuffer" nil t)
+(cjg-eval-after-load "ibuffer"
+  (require 'ibuf-ext nil t)
+  (when (featurep 'ibuf-ext)
+    (setq ibuffer-saved-filter-groups '(("default"
+                                         ("org" (mode . org-mode))
+                                         ("gnus" (or
+                                                  (mode . message-mode)
+                                                  (mode . mail-mode)
+                                                  (mode . gnus-group-mode)
+                                                  (mode . gnus-summary-mode)
+                                                  (mode . gnus-article-mode))))))
+    (cjg-add-hook ibuffer-mode-hook
+      (ibuffer-switch-to-saved-filter-groups "default"))))
 
 (server-start)
 
