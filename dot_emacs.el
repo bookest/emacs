@@ -734,7 +734,10 @@ This is a modified version of something I stole from perlmonks."
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C-mode
-(setq c-basic-offset 8)
+(cjg-add-hook c-mode-common-hook
+  (setq c-basic-offset 4)
+  (cjg-enable 'abbrev-mod)
+  (flyspell-prog-mode))
 
 (cjg-define-compile-command cjg:c-set-compile-command
   (let ((file (file-name-nondirectory buffer-file-name)))
@@ -743,11 +746,12 @@ This is a modified version of something I stole from perlmonks."
 	    " "
 	    file)))
 
-(add-hook 'c-mode-hook 'cjg:c-set-compile-command)
-(add-hook 'c-mode-hook 'flyspell-prog-mode)
+(cjg-add-hook c-mode-hook
+  (setq c-basic-offset 8)
+  (cjg:c-set-compile-command))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C++-mode
-
 (cjg-define-compile-command cjg:c++-set-compile-command
   (let ((file (file-name-nondirectory buffer-file-name)))
     (concat "g++ -g -Wall -o " 
@@ -755,8 +759,12 @@ This is a modified version of something I stole from perlmonks."
 	    " "
 	    file)))
 
-(add-hook 'c++-mode-hook 'cjg:c++-set-compile-command)
-(add-hook 'c++-mode-hook 'flyspell-prog-mode)
+(cjg-add-hook c++-mode-hook
+  (cjg:c++-set-compile-command))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ObjC-mode
+(add-to-list 'auto-mode-alist '("\\.m" . objc-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ruby-mode
