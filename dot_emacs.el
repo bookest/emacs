@@ -777,6 +777,20 @@ This is a modified version of something I stole from perlmonks."
 ;;; ObjC-mode
 (add-to-list 'auto-mode-alist '("\\.m" . objc-mode))
 
+(defun cjg-objc-toggle-interface-implementation ()
+  "Switch between the interface and implementation files of an
+Objective-C class."
+  (interactive)
+  (save-match-data
+    (let* ((current (buffer-file-name))
+           (dest (cond ((string-match "\\.h$" current)
+                        (replace-match ".m" t t current))
+                       ((string-match "\\.m$" current)
+                        (replace-match ".h" t t current))
+                       (t nil))))
+      (when (not (null dest))
+        (find-file dest)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ruby-mode
 (autoload 'ruby-mode "ruby-mode" nil t)
