@@ -734,10 +734,21 @@ This is a modified version of something I stole from perlmonks."
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C-mode
+    
+(defun cjg-guess-c-header-mode ()
+  "Guess the proper CC-mode for header files."
+  (save-match-data
+    (let ((name (buffer-file-name)))
+      (when (and (string-match "\\.h$" name)
+                 (not (eq major-mode 'objc-mode)))
+        (when (replace-match ".m" t t name)
+          (objc-mode))))))
+
 (cjg-add-hook c-mode-common-hook
   (setq c-basic-offset 4)
   (cjg-enable 'abbrev-mod)
-  (flyspell-prog-mode))
+  (flyspell-prog-mode)
+  (cjg-guess-c-header-mode))
 
 (cjg-define-compile-command cjg:c-set-compile-command
   (let ((file (file-name-nondirectory buffer-file-name)))
