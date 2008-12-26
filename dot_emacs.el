@@ -746,7 +746,7 @@ This is a modified version of something I stole from perlmonks."
 
 (cjg-add-hook c-mode-common-hook
   (setq c-basic-offset 4)
-  (cjg-enable 'abbrev-mod)
+  (cjg-enable 'abbrev-mode)
   (flyspell-prog-mode)
   (cjg-guess-c-header-mode))
 
