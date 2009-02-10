@@ -735,7 +735,6 @@ This is a modified version of something I stole from perlmonks."
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C-mode
-    
 (defun cjg-guess-c-header-mode ()
   "Guess the proper CC-mode for header files."
   (save-match-data
@@ -745,44 +744,46 @@ This is a modified version of something I stole from perlmonks."
         (when (replace-match ".m" t t name)
           (objc-mode))))))
 
-(cjg-add-hook c-initialization-hook
-  (require 'find-file)
-  (cjg-define-keys c-mode-base-map
-    ("C-c C-o" . 'ff-find-other-file))
+(cjg-eval-after-load "cc-mode"
+  (cjg-add-hook c-initialization-hook
+    (require 'find-file)
+    (cjg-define-keys c-mode-base-map
+      ("C-c C-o" . 'ff-find-other-file))
 
-  ;; setup ff-find-other-file to work with objc files
-  (add-to-list 'cc-other-file-alist
-               `("\\.h\\'" (,@(cadr (assoc "\\.h\\'" cc-other-file-alist)) ".m")))
-  (add-to-list 'cc-other-file-alist '("\\.m\\'" (".h"))))
+    ;; setup ff-find-other-file to work with objc files
+    (add-to-list 'cc-other-file-alist
+                 `("\\.h\\'" (,@(cadr (assoc "\\.h\\'" cc-other-file-alist)) ".m")))
+    (add-to-list 'cc-other-file-alist '("\\.m\\'" (".h"))))
 
-(cjg-add-hook c-mode-common-hook
-  (setq c-basic-offset 4)
-  (cjg-enable 'abbrev-mode)
-  (flyspell-prog-mode)
-  (cjg-guess-c-header-mode))
+  (cjg-add-hook c-mode-common-hook
+    (setq c-basic-offset 4)
+    (cjg-enable 'abbrev-mode)
+    (flyspell-prog-mode)
+    (cjg-guess-c-header-mode))
 
-(cjg-define-compile-command cjg:c-set-compile-command
-  (let ((file (file-name-nondirectory buffer-file-name)))
-    (concat "gcc -g -Wall -o " 
-	    (file-name-sans-extension file)
-	    " "
-	    file)))
+  (cjg-define-compile-command cjg:c-set-compile-command
+    (let ((file (file-name-nondirectory buffer-file-name)))
+      (concat "gcc -g -Wall -o "
+              (file-name-sans-extension file)
+              " "
+              file)))
 
-(cjg-add-hook c-mode-hook
-  (setq c-basic-offset 8)
-  (cjg:c-set-compile-command))
+  (cjg-add-hook c-mode-hook
+    (setq c-basic-offset 8)
+    (cjg:c-set-compile-command)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C++-mode
-(cjg-define-compile-command cjg:c++-set-compile-command
-  (let ((file (file-name-nondirectory buffer-file-name)))
-    (concat "g++ -g -Wall -o " 
-	    (file-name-sans-extension file)
-	    " "
-	    file)))
+(cjg-eval-after-load "cc-mode"
+  (cjg-define-compile-command cjg:c++-set-compile-command
+    (let ((file (file-name-nondirectory buffer-file-name)))
+      (concat "g++ -g -Wall -o "
+              (file-name-sans-extension file)
+              " "
+              file)))
 
-(cjg-add-hook c++-mode-hook
-  (cjg:c++-set-compile-command))
+  (cjg-add-hook c++-mode-hook
+    (cjg:c++-set-compile-command)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ObjC-mode
