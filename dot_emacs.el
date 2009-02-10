@@ -146,7 +146,8 @@ NAME converted to lowercase."
     (cjg-disable 'cua-mode
                  'osx-key-mode
                  'one-buffer-one-frame-mode
-                 'aquamacs-styles-mode)))
+                 'aquamacs-styles-mode
+                 'tabbar-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; global keybindings
