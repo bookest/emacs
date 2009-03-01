@@ -797,6 +797,8 @@ This is a modified version of something I stole from perlmonks."
 (autoload 'ruby-electric-mode "ruby-electric" nil t)
 (autoload 'ri "ri-ruby" nil t)
 
+(defalias 'irb 'run-ruby)
+
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
