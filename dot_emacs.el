@@ -39,6 +39,10 @@
 (cjg-load-file-if-exists "/usr/share/emacs/site-lisp/site-gentoo.el")
 (cjg-load-file-if-exists *cjg-local-config-file-name*)
 
+;; setup ELPA if we have it
+(when (load (expand-file-name "~/lib/emacs/elpa/package.el") t)
+  (package-initialize))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general predicates
 
