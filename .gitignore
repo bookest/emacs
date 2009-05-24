@@ -1,1 +1,4 @@
 *.elc
+auto-save-list/*
+history
+server/*
