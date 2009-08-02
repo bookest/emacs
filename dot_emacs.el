@@ -956,6 +956,30 @@ Checks if unsaved buffers need to be saved."
   (add-to-list 'which-func-modes 'literate-haskell-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; puppet-mode
+(autoload 'puppet-mode "puppet-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
+
+(cjg-eval-after-load "puppet-mode"
+  (setq puppet-imenu-generic-expression
+        '((nil "^\\s-*\\(?:class\\|define\\|node\\)\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\(?:::\\(?:\\sw\\|\\s_\\)+\\)*\\)" 1)))
+
+  (cjg-add-hook puppet-mode-hook
+    (set (make-local-variable 'imenu-generic-expression)
+          puppet-imenu-generic-expression))
+
+  (cjg-eval-after-load "flymake"
+    (defun flymake-puppet-init ()
+      (let ((local-file (file-relative-name (flymake-init-create-temp-buffer-copy
+                                             'flymake-create-temp-inplace)
+                                            (file-name-directory buffer-file-name))))
+        `("puppet" ("--color=false --parseonly --ignoreimports" ,local-file))))
+
+    (push '(".+\\.pp$" flymake-puppet-init) flymake-allowed-file-name-masks)
+    (push '("\\(.*\\) at \\([^ \n]+\\):\\([0-9]+\\)$" 2 3 nil 1)
+          flymake-err-line-patterns)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; viper-mode
 ;; this should be moved to dot_viper.el
 ;(require 'viper)
