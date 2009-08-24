@@ -814,7 +814,7 @@ This is a modified version of something I stole from perlmonks."
     (flyspell-prog-mode))
      
   (cjg-define-keys ruby-mode-map
-    ("RET" . 'ruby-reindent-then-newline-and-indent))
+    ("RET" . 'reindent-then-newline-and-indent))
 
   (inf-ruby-keys)
   (add-to-list 'which-func-modes 'ruby-mode)
