@@ -886,20 +886,12 @@ Checks if unsaved buffers need to be saved."
         (insert "self")))
     (self-insert-command n))
   
-  (modify-syntax-entry ?_ "w" python-mode-syntax-table)
-
   (font-lock-add-keywords 'python-mode
                           '(("\\<\\(self\\)\\>" 1 'italic)))
 
   (add-to-list 'which-func-modes 'python-mode)
   (cjg-define-keys python-mode-map
-    ("."  . 'cjg-python-electric-dot)
-    ("\"" . 'cjg-electric-pair)
-    ("\'" . 'cjg-electric-pair)
-    ("("  . 'cjg-electric-pair)
-    ("["  . 'cjg-electric-pair)
-    ("{"  . 'cjg-electric-pair)
-    (","  . 'cjg-insert-trailing-space))
+    ("."  . 'cjg-python-electric-dot))
   
   (define-skeleton python-def-skeleton
     "Insert a def statement."
