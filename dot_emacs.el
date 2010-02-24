@@ -1321,6 +1321,9 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(when (osxp)
+  (require 'org-mac-message))
+
 (cjg-eval-after-load "org"
   (setq org-log-done t
         org-mode-hide-leading-stars t
