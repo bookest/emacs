@@ -882,12 +882,9 @@ Checks if unsaved buffers need to be saved."
     (let ((prev (char-before)))
       (when (not (or (null prev)
                      (python-in-string/comment)
-                     (let ((prev-syntax (char-syntax prev)))
-                       (or (equal prev-syntax ?w)
-                           (equal prev-syntax ?\")
-                           (equal prev-syntax ?\))))))
+                     (member (char-syntax prev) '(?w ?\" ?\)))))
         (insert "self")))
-    (self-insert-command n))                     
+    (self-insert-command n))
   
   (modify-syntax-entry ?_ "w" python-mode-syntax-table)
 
