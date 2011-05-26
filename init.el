@@ -1108,21 +1108,8 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRAMP
 (cjg-eval-after-load "tramp" 
-  (require 'tramp-util)              ;enable tramp-compile
   (setq tramp-default-method "ssh")
-  
-  (add-to-list 'tramp-default-method-alist
-               '("\\`localhost\\'" "\\`root\\'" "sudo"))
-  
-  (tramp-set-completion-function "ssh"
-                                 '((tramp-parse-sconfig "~/.ssh/config")
-                                   (tramp-parse-shosts 
-                                    "/etc/ssh/ssh_known_hosts")
-                                   (tramp-parse-shosts 
-                                    "/etc/ssh/ssh_known_hosts2")
-                                   (tramp-parse-shosts "~/.ssh/known_hosts2")
-                                   (tramp-parse-shosts "~/.ssh/known_hosts")))
-  
+
   ;; shut off backups for remote files
   (add-to-list 'backup-directory-alist
                (cons tramp-file-name-regexp nil)))
