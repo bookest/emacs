@@ -1,4 +1,4 @@
-;;; dot_emacs.el -- Emacs customizations 
+;;; init.el -- Emacs customizations
 ;;
 ;; Author: Chris Grim
 ;;
@@ -25,22 +25,13 @@
     (load file)))
 
 (defvar *cjg-lisp-dirs*
-  '("~/lib/emacs" "~/lib/emacs/site-lisp" "~/lib/emacs/vendor")
+  '("~/.emacs.d" "~/.emacs.d/site-lisp" "~/.emacs.d/vendor")
   "Directories to check for locally installed lisp")
 
 (cjg-add-to-load-path *cjg-lisp-dirs*)
 
-(defvar *cjg-local-config-file-name*
-  (concat (getenv "HOME")
-	  "/lisp/site-lisp/site-"
-	  (car (split-string system-name "\\."))
-	  ".el"))
-
-(cjg-load-file-if-exists "/usr/share/emacs/site-lisp/site-gentoo.el")
-(cjg-load-file-if-exists *cjg-local-config-file-name*)
-
 ;; setup ELPA if we have it
-(when (load (expand-file-name "~/lib/emacs/elpa/package.el") t)
+(when (load (expand-file-name "~/.emacs.d/elpa/package.el") t)
   (package-initialize))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -106,7 +97,7 @@ NAME converted to lowercase."
 
 (setq visible-bell t			
       inhibit-startup-message t
-      custom-file "~/lib/emacs/custom.el"
+      custom-file "~/.emacs.d/custom.el"
       custom-buffer-done-function 'kill-buffer)
 
 (setq backup-by-copying t
@@ -855,7 +846,7 @@ This is a modified version of something I stole from perlmonks."
            "ruby -S xmpfilter.rb"))))
 
 (cjg-eval-after-load "ri-ruby"
-  (setq ri-ruby-script (expand-file-name "~/lib/emacs/bin/ri-emacs.rb")))
+  (setq ri-ruby-script (expand-file-name "~/.emacs.d/bin/ri-emacs.rb")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-mode
