@@ -30,9 +30,13 @@
 
 (cjg-add-to-load-path *cjg-lisp-dirs*)
 
-;; setup ELPA if we have it
-(when (load (expand-file-name "~/.emacs.d/elpa/package.el") t)
-  (package-initialize))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; package.el
+(load-library "package")
+(package-initialize)
+
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general predicates
