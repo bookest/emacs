@@ -816,6 +816,8 @@ This is a modified version of something I stole from perlmonks."
 
   (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)
 
+  (setq ruby-insert-encoding-magic-comment nil)
+
   (when (require 'flymake nil t)
     (defun flymake-ruby-init ()
       (cjg-with-flymake-tempfile local-file
