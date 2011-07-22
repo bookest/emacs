@@ -960,7 +960,7 @@ Checks if unsaved buffers need to be saved."
       (let ((local-file (file-relative-name (flymake-init-create-temp-buffer-copy
                                              'flymake-create-temp-inplace)
                                             (file-name-directory buffer-file-name))))
-        `("puppet" ("--color=false --parseonly --ignoreimports" ,local-file))))
+        `("puppet" ("--color=false --parseonly --ignoreimport" ,local-file))))
 
     (push '(".+\\.pp$" flymake-puppet-init) flymake-allowed-file-name-masks)
     (push '("\\(.*\\) at \\([^ \n]+\\):\\([0-9]+\\)$" 2 3 nil 1)
