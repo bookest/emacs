@@ -1100,7 +1100,7 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; calendar-mode
 (cjg-eval-after-load "calendar"
-  (add-hook 'initial-calendar-window-hook 'mark-calendar-holidays)
+  (add-hook 'calendar-initial-window-hook 'calendar-mark-holidays)
   (add-hook 'diary-display-hook 'fancy-diary-display)
   (setq diary-file "~/.diary"))
 
