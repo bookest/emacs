@@ -954,7 +954,8 @@ Checks if unsaved buffers need to be saved."
 
   (cjg-add-hook puppet-mode-hook
     (set (make-local-variable 'imenu-generic-expression)
-          puppet-imenu-generic-expression))
+          puppet-imenu-generic-expression)
+    (setq show-trailing-whitespace t))
 
   (cjg-eval-after-load "flymake"
     (defun flymake-puppet-init ()
