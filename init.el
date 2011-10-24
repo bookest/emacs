@@ -134,7 +134,7 @@ NAME converted to lowercase."
       (add-to-list 'default-frame-alist elm)))
   
   (when (featurep 'aquamacs)
-    (setq default-major-mode 'fundamental-mode
+    (setq aquamacs-default-major-mode 'fundamental-mode
           initial-major-mode 'lisp-interaction-mode
           obof-other-frame-regexps nil
           special-display-regexps nil)
