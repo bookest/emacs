@@ -151,7 +151,7 @@ NAME converted to lowercase."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; global keybindings
 
-(defmacro cjg-define-global-keys (&rest bindings)
+(defmacro cjg-define-glbal-keys (&rest bindings)
   "Define one or more keybindings in the global map."
   `(cjg-define-keys (current-global-map) ,@bindings))
 (put 'cjg-define-global-keys 'lisp-indent-function 'defun)
@@ -178,7 +178,8 @@ NAME converted to lowercase."
   ("C-c a" . 'org-agenda)
   ("C-S-y" . 'clipboard-yank)
   ("C-S-w" . 'clipboard-kill-region)
-  ("M-W"   . 'clipboard-kill-ring-save))
+  ("M-W"   . 'clipboard-kill-ring-save)
+  ("<f9>" . 'deft))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general functions
@@ -1320,6 +1321,9 @@ is closer to GNU basename."
           ("rt" . "https://rt3.be-md.ncbi.nlm.nih.gov/rt3/Ticket/Display.html?id=%s")
           ("cpan" . "http://search.cpan.org/perldoc?%s")
           ("jira" . "http://jira.be-md.ncbi.nlm.nih.gov/browse/%s"))))
+
+(cjg-eval-after-load "deft"
+  (setq  deft-text-mode 'org-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; fit-frame
