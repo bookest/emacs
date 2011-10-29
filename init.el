@@ -151,7 +151,7 @@ NAME converted to lowercase."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; global keybindings
 
-(defmacro cjg-define-glbal-keys (&rest bindings)
+(defmacro cjg-define-global-keys (&rest bindings)
   "Define one or more keybindings in the global map."
   `(cjg-define-keys (current-global-map) ,@bindings))
 (put 'cjg-define-global-keys 'lisp-indent-function 'defun)
