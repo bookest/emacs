@@ -179,7 +179,8 @@ NAME converted to lowercase."
   ("C-S-y" . 'clipboard-yank)
   ("C-S-w" . 'clipboard-kill-region)
   ("M-W"   . 'clipboard-kill-ring-save)
-  ("<f9>" . 'deft))
+  ("<f9>" . 'deft)
+  ("C-x a r" . 'align-regexp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general functions
