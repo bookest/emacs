@@ -977,15 +977,6 @@ Checks if unsaved buffers need to be saved."
           flymake-err-line-patterns)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; viper-mode
-;; this should be moved to dot_viper.el
-;(require 'viper)
-;(setq-default viper-auto-indent t)
-;(setq viper-search-wrap-around t)
-;(setq viper-expert-level 2)
-;(setq viper-inhibit-startup-message t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; outline-mode
 (autoload 'outline-minor-mode "outline" "Toggle Outline minor mode")
 
