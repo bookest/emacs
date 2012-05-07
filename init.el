@@ -791,6 +791,13 @@ This is a modified version of something I stole from perlmonks."
 (add-to-list 'auto-mode-alist '("\\.m" . objc-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; java-mode
+(cjg-eval-after-load "cc-mode"
+  (cjg-add-hook java-mode-hook
+    ;; fix indentation for anonymous classes.
+    (c-set-offset 'inexpr-class 0)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ruby-mode
 (autoload 'ruby-mode "ruby-mode" nil t)
 (autoload 'run-ruby "inf-ruby" nil t)
