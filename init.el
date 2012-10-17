@@ -1039,7 +1039,7 @@ Adds the display of the current time in 24 hour format."
 eshell/man. Taken from EmacsWiki."
     (funcall 'perldoc (apply 'eshell-flatten-and-stringify args)))
   
-  (defun eshell/vi (&rest args)
+  (defun eshell/e (&rest args)
     "Invoke `find-file' on the file.
 \"vi +42 foo\" also goes to line 42 in the buffer."
     (while args
@@ -1048,18 +1048,7 @@ eshell/man. Taken from EmacsWiki."
                  (file (pop args)))
             (find-file file)
             (goto-line line))
-        (find-file (pop args)))))
-  
-  (defun eshell/view (&rest args)
-    "Invoke `view-file' on the file.  
-\"view +42 foo\" also goes to line 42 in the buffer."
-    (while args
-      (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
-          (let* ((line (string-to-number (match-string 1 (pop args))))
-                 (file (pop args)))
-            (view-file file)
-            (goto-line line))
-        (view-file (pop args))))))
+        (find-file (pop args))))))
 
 ;; this overrides the standard eshell/basename, so we have to be
 ;; careful about when it is loaded
