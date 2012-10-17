@@ -825,7 +825,9 @@ This is a modified version of something I stole from perlmonks."
 
   (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)
 
-  (setq ruby-insert-encoding-magic-comment nil)
+  (setq ruby-insert-encoding-magic-comment nil
+        ruby-deep-indent-paren nil
+        ruby-deep-arglist nil)
 
   (when (require 'flymake nil t)
     (defun flymake-ruby-init ()
