@@ -1355,6 +1355,11 @@ is closer to GNU basename."
     (cjg-add-hook ibuffer-mode-hook
       (ibuffer-switch-to-saved-filter-groups "default"))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; yaml
+(add-to-list 'auto-mode-alist '("\\.ya?ml" . yaml-mode))
+(autoload 'yaml-mode "yaml-mode")
+
 (server-start)
 
 ;;; Local Variables: ***
