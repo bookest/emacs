@@ -878,8 +878,11 @@ This is a modified version of something I stole from perlmonks."
                 'outline-minor-mode)
     (turn-on-eldoc-mode)
     (flyspell-prog-mode)
-    (substitute-pattern-with-unicode "\\<\\(lambda\\>\\)" 'lambda))
-  
+    (substitute-pattern-with-unicode "\\<\\(lambda\\>\\)" 'lambda)
+    (add-hook 'before-save-hook
+              (lambda () (delete-trailing-whitespace (point-min) nil))
+              t t))
+
   (defun pylint ()
     "Run pylint against the file visited by the current buffer.
 Checks if unsaved buffers need to be saved."
