@@ -834,6 +834,12 @@ This is a modified version of something I stole from perlmonks."
         ruby-deep-indent-paren nil
         ruby-deep-arglist nil)
 
+  ;; FIXME: ruby-electric uses the obsoleted last-command-char, which
+  ;; has been removed as of 24.3.1. This restores the alias until I
+  ;; can get an updated version of ruby-electric.
+  (when (not (boundp 'last-command-char))
+    (defvaralias 'last-command-char 'last-command-event))
+
   (when (require 'flymake nil t)
     (defun flymake-ruby-init ()
       (cjg-with-flymake-tempfile local-file
