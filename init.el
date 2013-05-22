@@ -1371,6 +1371,12 @@ is closer to GNU basename."
 (add-to-list 'auto-mode-alist '("\\.ya?ml" . yaml-mode))
 (autoload 'yaml-mode "yaml-mode")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; git-gutter
+(when (fboundp 'global-git-gutter-mode)
+  (global-git-gutter-mode t))
+
+
 (server-start)
 
 ;;; Local Variables: ***
