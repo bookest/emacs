@@ -1383,4 +1383,4 @@ is closer to GNU basename."
 ;;; auto-recompile: t ***
 ;;; End: ***
 
-;;; .emacs ends here
+;;; init.el ends here
