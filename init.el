@@ -839,16 +839,11 @@ Checks if unsaved buffers need to be saved."
       (save-some-buffers (not compilation-ask-about-save) nil)
       (compilation-start command)))
 
-  ;; This was present in earlier versions of python.el
-  (defsubst cjg-python-in-string/comment ()
-    "Return non-nil if point is in a Python literal (a comment or string)."
-    (nth 8 (syntax-ppss)))
-
   (defun cjg-python-electric-dot (n)
     (interactive "p")
     (let ((prev (char-before)))
       (when (not (or (null prev)
-                     (cjg-python-in-string/comment)
+                     (python-syntax-comment-or-string-p)
                      (member (char-syntax prev) '(?w ?\" ?\)))))
         (insert "self")))
     (self-insert-command n))
