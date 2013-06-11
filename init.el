@@ -633,17 +633,6 @@ This is a modified version of something I stole from perlmonks."
 (add-hook 'lisp-interaction-mode-hook 'cjg-emacs-lisp-mode-hook)
 (add-hook 'ielm-mode-hook 'cjg-emacs-lisp-mode-hook)
 
-;; these are from cliki:EditingLispCodeWithEmacs
-(cjg-define-keys emacs-lisp-mode-map
-  ("C-t" . 'transpose-sexps)
-  ("C-M-t" . 'transpose-chars)
-  ("C-b" . 'backward-sexp)
-  ("C-M-b" . 'backward-char)
-  ("C-f" . 'forward-sexp)
-  ("C-M-f" . 'forward-char)
-  ("(" . 'insert-parentheses)
-  (")" . 'move-past-close-and-reindent))
-
 (defun cjg-unintern-symbol-at-point ()
   "Unintern the symbol at point."
   (interactive)
