@@ -128,28 +128,7 @@ NAME converted to lowercase."
 ;;; macosx specific config
 (when (osxp)
   (setq mac-command-modifier 'meta)
-
-  (when (carbonp)			; set color scheme for Carbon
-    (dolist (elm '((foreground-color . "white")
-		   (background-color . "black")
-		   (cursor-color . "coral")))
-      (add-to-list 'default-frame-alist elm)))
   
-  (when (featurep 'aquamacs)
-    (setq aquamacs-default-major-mode 'fundamental-mode
-          initial-major-mode 'lisp-interaction-mode
-          obof-other-frame-regexps nil
-          special-display-regexps nil)
-    
-    (add-to-list 'obof-same-frame-regexps "\\*Help\\*")
-    (add-to-list 'obof-same-frame-switching-regexps "\\*Help\\*")
-
-    (cjg-disable 'cua-mode
-                 'osx-key-mode
-                 'one-buffer-one-frame-mode
-                 'aquamacs-styles-mode
-                 'tabbar-mode))
-
   (when (and (memq window-system '(mac ns))
              (featurep 'exec-path-from-shell))
     (exec-path-from-shell-initialize)))
