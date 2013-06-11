@@ -105,18 +105,18 @@
 
 (defmacro cjg-define-global-keys (&rest bindings)
   "Define one or more keybindings in the global map."
+  (declare (indent defun))
   `(cjg-define-keys (current-global-map) ,@bindings))
-(put 'cjg-define-global-keys 'lisp-indent-function 'defun)
 
 (defmacro cjg-define-keys (map &rest bindings)
   "Define one or more key bindings in MAP."
+  (declare (indent defun))
   ;;FIXME: keymap should be an uninterned tempvar to avoid name conflict.
   (let ((keymap map))
     `(progn
        ,@(mapcar (lambda (elt)
                    `(define-key ,keymap (kbd ,(car elt)) ,(cdr elt)))
                  bindings))))
-(put 'cjg-define-keys 'lisp-indent-function 'defun)
 
 (cjg-define-global-keys
   ("C-c o" .  'occur)
@@ -215,28 +215,28 @@ Stolen and modified from the original version found at
 
 (defmacro cjg-define-abbrevs (abbrev-table &rest abbrevs)
   "Define one or more abbreviations."
+  (declare (indent defun))
   (let ((table abbrev-table))
     `(progn
        ,@(mapcar (lambda (elt)
                    `(define-abbrev ,table ,@elt))
                  abbrevs))))
-(put 'cjg-define-abbrevs 'lisp-indent-function 1)
 
 (defmacro cjg-add-hook (hook &rest body)
+  (declare (indent defun))
   (let ((fun (intern (concat "cjg-"
                              (symbol-name hook)))))
     `(progn
        (defun ,fun ()
          (progn ,@body))
        (add-hook ',hook ',fun))))
-(put 'cjg-add-hook 'lisp-indent-function 1)
 
 (defmacro cjg-eval-after-load (file &rest body)
   "Evaluates `BODY' after `FILE' has been loaded.
 See `eval-after-load'."
+  (declare (indent defun))
   `(eval-after-load ,file
      '(progn ,@body)))
-(put 'cjg-eval-after-load 'lisp-indent-function 1)
 
 (defun cjg-term ()
   "Spawn a new terminal.
@@ -403,6 +403,7 @@ Unicode symbol SYMBOL."
 COMPILE-COMMAND is set to the results of evaluating
 BODY. COMPILE-COMMAND will be the default if a file named
 Makefile or makefile exist in the current directory."
+  (declare (indent defun))
   `(defun ,name ()
      (unless (or (null buffer-file-name)
 		 (file-exists-p "Makefile")
@@ -410,7 +411,6 @@ Makefile or makefile exist in the current directory."
        (set (make-local-variable 'compile-command) 
 	    (progn ,@body)))))
 
-(put 'cjg-define-compile-command 'lisp-indent-function 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; flymake
@@ -418,12 +418,11 @@ Makefile or makefile exist in the current directory."
 (defmacro cjg-with-flymake-tempfile (var &rest body)
   "Evaluate BODY with VAR bound to a tempfile suitable for use
 with flymake."
+  (declare (indent 1))
   `(let ((,var (file-relative-name (flymake-init-create-temp-buffer-copy
                                     'flymake-create-temp-inplace)
                                    (file-name-directory buffer-file-name))))
      ,@body))
-
-(put 'cjg-with-flymake-tempfile 'lisp-indent-function 1)
 
 (cjg-eval-after-load "flymake"
   (face-spec-set 'flymake-errline '((t (:underline "OrangeRed")))  nil)
