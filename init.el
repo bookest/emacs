@@ -148,7 +148,11 @@ NAME converted to lowercase."
                  'osx-key-mode
                  'one-buffer-one-frame-mode
                  'aquamacs-styles-mode
-                 'tabbar-mode)))
+                 'tabbar-mode))
+
+  (when (and (memq window-system '(mac ns))
+             (featurep 'exec-path-from-shell))
+    (exec-path-from-shell-initialize)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; global keybindings

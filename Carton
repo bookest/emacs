@@ -6,6 +6,7 @@
 (depends-on "color-theme")
 (depends-on "color-theme-solarized")
 (depends-on "deft")
+(depends-on "exec-path-from-shell")
 (depends-on "full-ack")
 (depends-on "git-gutter")
 (depends-on "haskell-mode")
