@@ -40,38 +40,6 @@
 
 (package-initialize)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; general predicates
-
-(defmacro cjg-define-domain-predicate (name re)
-  "Defines a predicate that returns true if `system-name' matches RE.
-
-The predicate will be called cjg-at-LCNAME-p. Where LCNAME is
-NAME converted to lowercase."
-  `(defun ,(intern (concat "cjg-at-" (downcase name) "-p")) ()
-     ,(concat "Returns true if running Emacs at " name ".")
-     (save-match-data
-       (if (string-match ,re (system-name))
-           t
-         nil))))
-
-(cjg-define-domain-predicate "NCBI" "\\.ncbi\\.nlm\\.nih\\.gov$")
-(cjg-define-domain-predicate "NYU" "\\.nyu\\.edu")
-
-(defalias 'at-work-p 'cjg-at-ncbi-p)
-
-(defun cjg-at-home-p ()
-  "Returns true if running Emacs at home."
-  (not (at-work-p)))
-
-(defun osxp ()
-  "Return true if this Emacs is running on MacOS X."
-  (string= system-type "darwin"))
-
-(defun carbonp ()
-  "Returns true if running under Carbon."
-  (string= window-system "mac"))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
@@ -119,13 +87,12 @@ NAME converted to lowercase."
 (when (boundp 'safe-local-variable-values)
   (add-to-list 'safe-local-variable-values '(auto-recompile . t)))
 
-(defvar *cjg-work-email-address* "grimc@ncbi.nlm.nih.gov")
-
-(when (at-work-p)
-  (setq user-mail-address *cjg-work-email-address*))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; macosx specific config
+(defun osxp ()
+  "Return true if this Emacs is running on MacOS X."
+  (string= system-type "darwin"))
+
 (when (osxp)
   (setq mac-command-modifier 'meta)
   
