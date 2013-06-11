@@ -682,7 +682,7 @@ This is a modified version of something I stole from perlmonks."
   "Unintern the symbol at point."
   (interactive)
   (let ((sym (symbol-at-point)))
-    (unintern sym)))
+    (unintern sym obarray)))
 
 (defmacro cjg-macroexpand (form)
   "Pretty print the macro expansion of `FORM'."
