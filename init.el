@@ -741,7 +741,6 @@ This is a modified version of something I stole from perlmonks."
 ;;; ruby-mode
 (autoload 'ruby-mode "ruby-mode" nil t)
 (autoload 'run-ruby "inf-ruby" nil t)
-(autoload 'inf-ruby-keys "inf-ruby" nil t)
 (autoload 'ruby-electric-mode "ruby-electric" nil t)
 (autoload 'ri "ri-ruby" nil t)
 
@@ -765,7 +764,6 @@ This is a modified version of something I stole from perlmonks."
   (cjg-define-keys ruby-mode-map
     ("RET" . 'reindent-then-newline-and-indent))
 
-  (inf-ruby-keys)
   (add-to-list 'which-func-modes 'ruby-mode)
 
   (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)
