@@ -2,3 +2,4 @@
 auto-save-list/*
 history
 server/*
+.cask/*

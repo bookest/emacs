@@ -4,42 +4,9 @@
 ;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; load-path config
-(defun cjg-add-to-load-path (paths)
-  "Add the list of directories to load-path if they exist."
-  (dolist (dir paths)
-    (let ((expanded-dir (expand-file-name dir))) 
-      (when (file-directory-p expanded-dir)
-	(message "Adding %S to load path..." expanded-dir)
-	(add-to-list 'load-path expanded-dir)
-        (save-current-buffer
-          ;;FIXME: unfortunately, this appends directories to loadpath
-          ;; so it doesn't DWIM if I want to use an alterante version
-          ;; of something distributed with emacs (Gnus for example)
-          (cd dir)
-          (normal-top-level-add-subdirs-to-load-path))))))
-
-(defun cjg-load-file-if-exists (file)
-  (when (file-exists-p file)
-    (message "loading %s..." file)
-    (load file)))
-
-(defvar *cjg-lisp-dirs*
-  '("~/.emacs.d" "~/.emacs.d/site-lisp" "~/.emacs.d/vendor")
-  "Directories to check for locally installed lisp")
-
-(cjg-add-to-load-path *cjg-lisp-dirs*)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; package.el
-(load-library "package")
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-
-(require 'pallet nil :noerror)
-
-(package-initialize)
-
+;;; Bootstrap cask
+(require 'cask (expand-file-name "~/.cask/cask.el"))
+(cask-initialize)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
@@ -83,9 +50,6 @@
       version-control t)
 
 (setq-default indent-tabs-mode nil)
-
-(when (boundp 'safe-local-variable-values)
-  (add-to-list 'safe-local-variable-values '(auto-recompile . t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; macosx specific config
@@ -624,6 +588,7 @@ This is a modified version of something I stole from perlmonks."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; emacs-lisp-mode
 (autoload 'turn-on-eldoc-mode "eldoc" nil t) 
+(add-to-list 'auto-mode-alist '("Cask$" . emacs-lisp-mode))
 
 (cjg-add-hook emacs-lisp-mode-hook
   (turn-on-eldoc-mode)
@@ -643,7 +608,6 @@ This is a modified version of something I stole from perlmonks."
   "Pretty print the macro expansion of `FORM'."
   `(pp (macroexpand-all ',form)))
 
-(require 'auto-recomp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; sh-mode
@@ -1312,9 +1276,5 @@ is closer to GNU basename."
 
 
 (server-start)
-
-;;; Local Variables: ***
-;;; auto-recompile: t ***
-;;; End: ***
 
 ;;; init.el ends here
