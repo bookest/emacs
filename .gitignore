@@ -1,5 +1,16 @@
 *.elc
+
 auto-save-list/*
 history
 server/*
+
 .cask/*
+elpa/*
+async-bytecomp.log
+
+abbrev_defs
+
+url/cookies
+
+eshell/lastdir
+eshell/history
