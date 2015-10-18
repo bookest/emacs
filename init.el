@@ -5,8 +5,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Bootstrap cask
-(require 'cask (expand-file-name "~/.cask/cask.el"))
-(cask-initialize)
+(eval-and-compile
+  (require 'cask (expand-file-name "~/.cask/cask.el"))
+  (cask-initialize))
 
 (require 'auto-compile)
 (auto-compile-on-load-mode 1)
