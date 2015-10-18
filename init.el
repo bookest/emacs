@@ -7,7 +7,7 @@
 ;;; Bootstrap cask
 (eval-and-compile
   (require 'cask (expand-file-name "~/.cask/cask.el"))
-  (cask-initialize))
+  (cask-initialize (getenv "TRAVIS_BUILD_DIR")))
 
 (require 'auto-compile)
 (auto-compile-on-load-mode 1)
