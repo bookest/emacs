@@ -13,6 +13,8 @@
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
 
+(pallet-mode t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
 
