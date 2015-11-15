@@ -794,7 +794,7 @@ Checks if unsaved buffers need to be saved."
   (font-lock-add-keywords 'python-mode
                           '(("\\<\\(self\\)\\>" 1 'italic)))
 
-  (bind-key "." 'cjg-python-electric-dot)
+  (bind-key "." 'cjg-python-electric-dot python-mode-map)
 
   (define-skeleton python-def-skeleton
     "Insert a def statement."
