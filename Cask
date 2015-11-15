@@ -55,6 +55,7 @@
 (depends-on "scala-mode2")
 (depends-on "shut-up")
 (depends-on "sr-speedbar")
+(depends-on "use-package")
 (depends-on "virtualenv")
 (depends-on "with-editor")
 (depends-on "yaml-mode")

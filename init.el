@@ -9,11 +9,17 @@
   (require 'cask (expand-file-name "~/.cask/cask.el"))
   (cask-initialize (getenv "TRAVIS_BUILD_DIR")))
 
-(require 'auto-compile)
-(auto-compile-on-load-mode 1)
-(auto-compile-on-save-mode 1)
+(eval-and-compile
+  (require 'use-package))
 
-(pallet-mode t)
+(use-package auto-compile
+  :config
+  (auto-compile-on-load-mode 1)
+  (auto-compile-on-save-mode 1))
+
+(use-package pallet
+  :config
+  (pallet-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
@@ -43,7 +49,7 @@
 
 (display-time)
 
-(setq visible-bell t			
+(setq visible-bell t
       inhibit-startup-message t
       custom-file "~/.emacs.d/custom.el"
       custom-buffer-done-function 'kill-buffer)
@@ -66,7 +72,7 @@
 
 (when (osxp)
   (setq mac-command-modifier 'meta)
-  
+
   (when (and (memq window-system '(mac ns))
              (featurep 'exec-path-from-shell))
     (exec-path-from-shell-initialize)))
@@ -114,7 +120,7 @@ Stolen from emacswiki."
   (interactive)
   (switch-to-buffer (get-buffer-create "*scratch*"))
   (insert initial-scratch-message)
-  (lisp-interaction-mode))             
+  (lisp-interaction-mode))
 
 (defun cjg-add-mode-directive nil
   "Insert a mode directive for the current major-mode at the end of
@@ -128,7 +134,7 @@ the first line of the buffer"
     (save-excursion
       (goto-char (point-min))
       (end-of-line)
-      (insert " -*- Mode: " mode " -*-")))) 
+      (insert " -*- Mode: " mode " -*-"))))
 
 (defun cjg-electric-pair ()
   "Insert character pair without surrounding spaces.
@@ -157,7 +163,7 @@ Stolen and modified from the original version found at
                   (substring dir 0 -1)
                 dir))
 	 (newname (concat dir "/" name)))
-    
+
     (if (not filename)
 	(message "Buffer '%s' is not visiting a file!" name)
       (copy-file filename newname 1)
@@ -201,13 +207,6 @@ Stolen and modified from the original version found at
        (defun ,fun ()
          (progn ,@body))
        (add-hook ',hook ',fun))))
-
-(defmacro cjg-eval-after-load (file &rest body)
-  "Evaluates `BODY' after `FILE' has been loaded.
-See `eval-after-load'."
-  (declare (indent defun))
-  `(eval-after-load ,file
-     '(progn ,@body)))
 
 (defun cjg-term ()
   "Spawn a new terminal.
@@ -330,7 +329,7 @@ or GREATER-THAN into an actual Unicode character code. "
 
 
 (defun substitute-pattern-with-unicode (pattern symbol)
-  "Add a font lock hook to replace the matched part of PATTERN with the 
+  "Add a font lock hook to replace the matched part of PATTERN with the
 Unicode symbol SYMBOL."
   (interactive)
   (when window-system
@@ -341,7 +340,7 @@ Unicode symbol SYMBOL."
                                       (match-end 1)
                                       ,(unicode-symbol symbol))
                       nil)))))))
-  
+
 (defun substitute-patterns-with-unicode (patterns)
   "Call SUBSTITUTE-PATTERN-WITH-UNICODE repeatedly."
   (mapcar #'(lambda (x)
@@ -355,14 +354,14 @@ Unicode symbol SYMBOL."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; the island of lost modes
-(require 'executable)
-(setq executable-magicless-file-regexp 
-      (concat executable-magicless-file-regexp "\\|\\.pm$"))
+(use-package executable
+  :config
+  (setq executable-magicless-file-regexp
+        (concat executable-magicless-file-regexp "\\|\\.pm$"))
+  (add-hook 'after-save-hook
+            'executable-make-buffer-file-executable-if-script-p))
 
-(add-hook 'after-save-hook 
-	  'executable-make-buffer-file-executable-if-script-p)
-
-(require 'generic-x)
+(use-package generic-x)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; compile-mode
@@ -379,7 +378,7 @@ Makefile or makefile exist in the current directory."
      (unless (or (null buffer-file-name)
 		 (file-exists-p "Makefile")
 		 (file-exists-p "makefile"))
-       (set (make-local-variable 'compile-command) 
+       (set (make-local-variable 'compile-command)
 	    (progn ,@body)))))
 
 
@@ -401,22 +400,33 @@ with flymake."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; font-lock-mode
-(require 'font-lock)
-(setq-default font-lock-maximum-decoration t
-              font-lock-maximum-size nil)
-(global-font-lock-mode 1)
+(use-package font-lock
+  :config
+  (setq-default font-lock-maximum-decoration t
+                font-lock-maximum-size nil)
+  (global-font-lock-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; auto-insert-mode
-(require 'autoinsert)
-(setq-default auto-insert t)
+(use-package autoinsert
+  :config
+  (setq-default auto-insert t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; cperl-mode
-(defalias 'perl-mode 'cperl-mode) 
-(add-to-list 'auto-mode-alist '("\\.t$" . cperl-mode))
-
-(cjg-eval-after-load "cperl-mode"
+(use-package cperl-mode
+  :commands (cjg-perl-insert-no-critic
+             cjg-perl-toggle-test-plan
+             cjg-perl-increment-test-plan
+             cjg-perl-set-test-plan)
+  :bind (("C-c nc" . cjg-perl-insert-no-critic)
+         ("C-c tp" . cjg-perl-toggle-test-plan)
+         ("C-c ip" . cjg-perl-increment-test-plan)
+         ("C-c sp" . cjg-perl-set-test-plan))
+  :mode ("\\.t$" "\\.pl$" "\\.pm$")
+  :init
+  (defalias 'perl-mode 'cperl-mode)
+  :config
   (setq cperl-electric-keywords nil
         cperl-electric-parens nil
         cperl-invalid-face nil
@@ -425,11 +435,11 @@ with flymake."
         cperl-indent-parens-as-block t
         cperl-close-paren-offset -2
         cperl-label-offset 0)
-    
+
   (cjg-define-compile-command cjg:cperl-set-compile-command
-    (concat "perl -cw " 
+    (concat "perl -cw "
             (file-name-nondirectory buffer-file-name)))
-  
+
   (cjg-add-hook cperl-mode-hook
     (cjg:cperl-set-compile-command)
     (cjg-enable 'auto-insert-mode
@@ -459,7 +469,7 @@ with flymake."
     "1;\n\n"
     "__END__\n")
   (define-auto-insert "\\.pm$" 'perl-module-skeleton)
-  
+
   (define-skeleton perl-test-skeleton
     "Inserts a skeleton Perl test file into the current buffer."
     nil
@@ -555,13 +565,7 @@ This is a modified version of something I stole from perlmonks."
       (save-match-data
         (if (cjg-perl-find-test-plan)
             (replace-match (number-to-string arg) nil nil nil 1)
-          (message "no plan")))))
-
-  (cjg-define-keys cperl-mode-map
-    ("C-c nc" . 'cjg-perl-insert-no-critic)
-    ("C-c tp" . 'cjg-perl-toggle-test-plan)
-    ("C-c ip" . 'cjg-perl-increment-test-plan)
-    ("C-c sp" . 'cjg-perl-set-test-plan)))
+          (message "no plan"))))))
 
 (defun perldoc (args)
   "Like man, but use perldoc instead."
@@ -575,50 +579,40 @@ This is a modified version of something I stole from perlmonks."
   (interactive "r")
   (shell-command-on-region start end "perl " "*Perl Output*"))
 
-(autoload 'perl-lint "perl-lint-mode" nil t)
-(autoload 'perl-lint-mode "perl-lint-mode" nil t)
-(autoload 'perltidy "perltidy-mode" nil t)
-(autoload 'perltidy-mode "perltidy-mode" nil t)
-(autoload 'perlcritic "perlcritic" nil t)
-(autoload 'perlcritic-region "perlcritic" nil t)
-(autoload 'perlcritic-mode "perlcritic" nil t)
-
-(autoload 'sepia-init "sepia" nil t)
-(defalias 'run-perl 'sepia-init)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tt-mode
-(autoload 'tt-mode "tt-mode")
-(add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
+(use-package tt-mode :mode "\\.tt$")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; emacs-lisp-mode
-(autoload 'turn-on-eldoc-mode "eldoc" nil t) 
-(add-to-list 'auto-mode-alist '("Cask$" . emacs-lisp-mode))
+(use-package emacs-lisp-mode
+  :mode "Cask$"
+  :config
+  (cjg-add-hook emacs-lisp-mode-hook
+    (turn-on-eldoc-mode)
+    (flyspell-prog-mode)
+    (substitute-pattern-with-unicode "\\<(\\(lambda\\>\\)" 'lambda))
 
-(cjg-add-hook emacs-lisp-mode-hook
-  (turn-on-eldoc-mode)
-  (flyspell-prog-mode)
-  (substitute-pattern-with-unicode "\\<(\\(lambda\\>\\)" 'lambda))
+  (add-hook 'lisp-interaction-mode-hook 'cjg-emacs-lisp-mode-hook)
+  (add-hook 'ielm-mode-hook 'cjg-emacs-lisp-mode-hook)
 
-(add-hook 'lisp-interaction-mode-hook 'cjg-emacs-lisp-mode-hook)
-(add-hook 'ielm-mode-hook 'cjg-emacs-lisp-mode-hook)
+  (defun cjg-unintern-symbol-at-point ()
+    "Unintern the symbol at point."
+    (interactive)
+    (let ((sym (symbol-at-point)))
+      (unintern sym obarray)))
 
-(defun cjg-unintern-symbol-at-point ()
-  "Unintern the symbol at point."
-  (interactive)
-  (let ((sym (symbol-at-point)))
-    (unintern sym obarray)))
-
-(defmacro cjg-macroexpand (form)
-  "Pretty print the macro expansion of `FORM'."
-  `(pp (macroexpand-all ',form)))
+  (defmacro cjg-macroexpand (form)
+    "Pretty print the macro expansion of `FORM'."
+    `(pp (macroexpand-all ',form))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; sh-mode
-(cjg-eval-after-load "sh-script"
+(use-package sh-script
+  :config
   (setq sh-basic-offset 4)
 
   (cjg-define-compile-command cjg:sh-set-compile-command
@@ -629,43 +623,43 @@ This is a modified version of something I stole from perlmonks."
     (defun cjg-shell-flymake-init ()
       (cjg-with-flymake-tempfile local-file
         `("bash" ("-n" ,local-file))))
-    
+
     (defvar cjg-flymake-shell-err-line-pattern
       '("^\\(.+\\): line \\([0-9]+\\): \\(.+\\)$" 1 2 nil 3))
-    
+
     (push cjg-flymake-shell-err-line-pattern flymake-err-line-patterns)
-  
+
     (push '(".+\\.sh$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
     (push '("bashrc$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
     (push '("bash_profile$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
     (push '("bash_logout$" cjg-shell-flymake-init) flymake-allowed-file-name-masks))
-    
+
   (cjg-add-hook sh-mode-hook
     (cjg:sh-set-compile-command)
     (cjg-enable 'abbrev-mode)
     (flyspell-prog-mode)))
-  
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C-mode
-(defun cjg-guess-c-header-mode ()
-  "Guess the proper CC-mode for header files."
-  (save-match-data
-    (let ((name (buffer-file-name)))
-      (when (and (string-match "\\.h$" name)
-                 (not (eq major-mode 'objc-mode)))
-        (when (replace-match ".m" t t name)
-          (objc-mode))))))
+(use-package cc-mode
+  :bind ("C-c C-o" . ff-find-other-file)
+  :mode ("\\.m$" . objc-mode)
+  :config
+  (use-package find-file)
+  ;; setup ff-find-other-file to work with objc files
+  (add-to-list 'cc-other-file-alist
+               `("\\.h\\'" (,@(cadr (assoc "\\.h\\'" cc-other-file-alist)) ".m")))
+  (add-to-list 'cc-other-file-alist '("\\.m\\'" (".h")))
 
-(cjg-eval-after-load "cc-mode"
-  (cjg-add-hook c-initialization-hook
-    (require 'find-file)
-    (cjg-define-keys c-mode-base-map
-      ("C-c C-o" . 'ff-find-other-file))
-
-    ;; setup ff-find-other-file to work with objc files
-    (add-to-list 'cc-other-file-alist
-                 `("\\.h\\'" (,@(cadr (assoc "\\.h\\'" cc-other-file-alist)) ".m")))
-    (add-to-list 'cc-other-file-alist '("\\.m\\'" (".h"))))
+  (defun cjg-guess-c-header-mode ()
+    "Guess the proper CC-mode for header files."
+    (save-match-data
+      (let ((name (buffer-file-name)))
+        (when (and (string-match "\\.h$" name)
+                   (not (eq major-mode 'objc-mode)))
+          (when (replace-match ".m" t t name)
+            (objc-mode))))))
 
   (cjg-add-hook c-mode-common-hook
     (setq c-basic-offset 4)
@@ -682,11 +676,8 @@ This is a modified version of something I stole from perlmonks."
 
   (cjg-add-hook c-mode-hook
     (setq c-basic-offset 8)
-    (cjg:c-set-compile-command)))
+    (cjg:c-set-compile-command))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; C++-mode
-(cjg-eval-after-load "cc-mode"
   (cjg-define-compile-command cjg:c++-set-compile-command
     (let ((file (file-name-nondirectory buffer-file-name)))
       (concat "g++ -g -Wall -o "
@@ -694,61 +685,36 @@ This is a modified version of something I stole from perlmonks."
               " "
               file)))
 
-  (cjg-add-hook c++-mode-hook
-    (cjg:c++-set-compile-command)))
+  (cjg-add-hook c++-mode-hook (cjg:c++-set-compile-command))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ObjC-mode
-(add-to-list 'auto-mode-alist '("\\.m$" . objc-mode))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; java-mode
-(cjg-eval-after-load "cc-mode"
   (cjg-add-hook java-mode-hook
     ;; fix indentation for anonymous classes.
     (c-set-offset 'inexpr-class 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ruby-mode
-(autoload 'ruby-mode "ruby-mode" nil t)
-(autoload 'run-ruby "inf-ruby" nil t)
-(autoload 'ruby-electric-mode "ruby-electric" nil t)
-(autoload 'ri "ri-ruby" nil t)
-
-(defalias 'irb 'run-ruby)
-
-(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Guardfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Puppetfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Berksfile$" . ruby-mode))
-(add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
-
-(cjg-eval-after-load "ruby-mode"
+(use-package ruby-mode
+  :mode ("\\.rb$"
+         "\\.rake$"
+         "\\.gemspec$"
+         "Gemfile$"
+         "Guardfile$"
+         "Puppetfile$"
+         "Rakefile$"
+         "Vagrantfile$"
+         "Berksfile$")
+  :interpreter "ruby"
+  :bind ("RET" . reindent-then-newline-and-indent)
+  :init
+  (defalias 'irb 'run-ruby)
+  :config
   (cjg-add-hook ruby-mode-hook
     (cjg-enable 'ruby-electric-mode)
     (flyspell-prog-mode))
-     
-  (cjg-define-keys ruby-mode-map
-    ("RET" . 'reindent-then-newline-and-indent))
-
-  (add-to-list 'which-func-modes 'ruby-mode)
-
-  (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)
 
   (setq ruby-insert-encoding-magic-comment nil
         ruby-deep-indent-paren nil
         ruby-deep-arglist nil)
-
-  ;; FIXME: ruby-electric uses the obsoleted last-command-char, which
-  ;; has been removed as of 24.3.1. This restores the alias until I
-  ;; can get an updated version of ruby-electric.
-  (when (not (boundp 'last-command-char))
-    (defvaralias 'last-command-char 'last-command-event))
 
   (when (require 'flymake nil t)
     (defun flymake-ruby-init ()
@@ -757,12 +723,12 @@ This is a modified version of something I stole from perlmonks."
 
     (defvar cjg-ruby-flymake-err-line-patterns
       '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3))
-    
+
     (push cjg-ruby-flymake-err-line-patterns flymake-err-line-patterns)
-    
+
     (push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
     (push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks))
-  
+
   (defun xmp ()
     (interactive)
     (let ((line (current-line))
@@ -783,12 +749,19 @@ This is a modified version of something I stole from perlmonks."
           (t
            "ruby -S xmpfilter.rb"))))
 
-(cjg-eval-after-load "ri-ruby"
-  (setq ri-ruby-script (expand-file-name "~/.emacs.d/bin/ri-emacs.rb")))
+(use-package inf-ruby :init (defalias 'irb 'rub-ruby))
+(use-package ruby-electric
+  :config
+  ;; FIXME: ruby-electric uses the obsoleted last-command-char, which
+  ;; has been removed as of 24.3.1. This restores the alias until I
+  ;; can get an updated version of ruby-electric.
+  (when (not (boundp 'last-command-char))
+    (defvaralias 'last-command-char 'last-command-event)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-mode
-(cjg-eval-after-load "python"
+(use-package python
+  :config
   (cjg-add-hook python-mode-hook
     (cjg-enable 'abbrev-mode
                 'outline-minor-mode)
@@ -821,10 +794,8 @@ Checks if unsaved buffers need to be saved."
   (font-lock-add-keywords 'python-mode
                           '(("\\<\\(self\\)\\>" 1 'italic)))
 
-  (add-to-list 'which-func-modes 'python-mode)
-  (cjg-define-keys python-mode-map
-    ("."  . 'cjg-python-electric-dot))
-  
+  (bind-key "." 'cjg-python-electric-dot)
+
   (define-skeleton python-def-skeleton
     "Insert a def statement."
     nil
@@ -834,12 +805,12 @@ Checks if unsaved buffers need to be saved."
     "Insert a def statement for a method."
     nil
     "def " _ "(self):")
-  
+
   (define-skeleton python-class-skeleton
     "Insert a class definition."
     nil
     "class " _ ":")
-  
+
   (cjg-define-abbrevs python-mode-abbrev-table
     ("def" "" 'python-def-skeleton)
     ("defm" "" 'python-def-method-skeleton)
@@ -852,37 +823,20 @@ Checks if unsaved buffers need to be saved."
     ("__m" "__main__")
     ("ifm" "if __name__ == '__main__':")))
 
-(autoload 'pymacs-load "pymacs" nil t)
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; haskell-mode
-(autoload 'haskell-mode "haskell-mode" "Major mode for editing Haskell." t)
-(autoload 'literate-haskell-mode "haskell-mode"
-  "Major mode for editing literate Haskell." t)
-
-(add-to-list 'auto-mode-alist '("\\.[hg]s$"  . haskell-mode))
-(add-to-list 'auto-mode-alist '("\\.hi$"     . haskell-mode))
-(add-to-list 'auto-mode-alist '("\\.l[hg]s$" . literate-haskell-mode))
-
-(cjg-eval-after-load "haskell-mode"
+(use-package haskell-mode
+  :config
   (cjg-add-hook haskell-mode-hook
     (turn-on-haskell-decl-scan)
     (turn-on-haskell-doc-mode)
     (turn-on-haskell-indent)
-    (flyspell-prog-mode))
-  
-  (add-to-list 'which-func-modes 'haskell-mode)
-  (add-to-list 'which-func-modes 'literate-haskell-mode))
+    (flyspell-prog-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; puppet-mode
-(autoload 'puppet-mode "puppet-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
-
-(cjg-eval-after-load "puppet-mode"
+(use-package puppet-mode
+  :config
   (setq puppet-imenu-generic-expression
         '((nil "^\\s-*\\(?:class\\|define\\|node\\)\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\(?:::\\(?:\\sw\\|\\s_\\)+\\)*\\)" 1)))
 
@@ -904,65 +858,61 @@ Checks if unsaved buffers need to be saved."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; outline-mode
-(autoload 'outline-minor-mode "outline" "Toggle Outline minor mode")
+(use-package outline)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; shell-mode
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t) 
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on) 
-
-;; this will clear the shell buffer - kept here for reference
-;;(let ((comint-buffer-maximum-size 0))
-;;  (comint-truncate-buffer))
+(use-package ansi-color)
+(use-package shell
+  :config
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; eshell
-(cjg-eval-after-load "eshell"
+(use-package eshell
+  :config
+  (setq eshell-prompt-function 'cjg-eshell-mildly-fancy-prompt
+        eshell-prompt-regexp "^[^#>\n]* [#>] "
+        eshell-cp-interactive-query t
+        eshell-ln-interactive-query t
+        eshell-mv-interactive-query t
+        eshell-rm-interactive-query t
+        eshell-mv-overwrite-files nil
+        eshell-cmpl-cycle-completions nil
+        eshell-scroll-show-maximum-output t
+        eshell-scroll-to-bottom-on-output nil)
+
   (defun cjg-eshell-simple-prompt ()
     "A simple [user@host] pwd > prompt for eshell."
-    (concat "[" user-login-name "@" 
-            (car (split-string system-name "\\.")) "] " 
+    (concat "[" user-login-name "@"
+            (car (split-string system-name "\\.")) "] "
             (eshell/pwd)
             (if (= (user-uid) 0)
                 " # "
               " > " )))
-  
+
   (defun cjg-eshell-mildly-fancy-prompt ()
     "A prompt that is a little fancier than the simple prompt.
 Adds the display of the current time in 24 hour format."
     (concat (format-time-string "{%T}") (cjg-eshell-simple-prompt)))
-  
-  (setq eshell-prompt-function 'cjg-eshell-mildly-fancy-prompt)
-  (setq eshell-prompt-regexp "^[^#>\n]* [#>] ")
-  (setq eshell-cp-interactive-query t
-        eshell-ln-interactive-query t
-        eshell-mv-interactive-query t
-        eshell-rm-interactive-query t
-        eshell-mv-overwrite-files nil)
-  
-  (setq eshell-cmpl-cycle-completions nil) 
-  
-  (setq eshell-scroll-show-maximum-output t
-        eshell-scroll-to-bottom-on-output nil)
-  
+
   (cjg-add-hook eshell-mode-hook
     (add-to-list 'eshell-output-filter-functions
                  'eshell-postoutput-scroll-to-bottom))
-  
+
   ;; handle ASCII control codes
-  (require 'ansi-color)
   (add-hook 'eshell-preoutput-filter-functions 'ansi-color-apply)
-  
+
   (defun eshell/clear nil
     "Emulate the shell command clear in lisp"
     (let ((eshell-buffer-maximum-lines 0))
       (eshell-truncate-buffer)))
-  
+
   (defun eshell/perldoc (&rest args)
     "Browse Perl documentation in Pod format. Similar to
 eshell/man. Taken from EmacsWiki."
     (funcall 'perldoc (apply 'eshell-flatten-and-stringify args)))
-  
+
   (defun eshell/e (&rest args)
     "Invoke `find-file' on the file.
 \"vi +42 foo\" also goes to line 42 in the buffer."
@@ -972,74 +922,78 @@ eshell/man. Taken from EmacsWiki."
                  (file (pop args)))
             (find-file file)
             (goto-line line))
-        (find-file (pop args))))))
+        (find-file (pop args)))))
 
-;; this overrides the standard eshell/basename, so we have to be
-;; careful about when it is loaded
-(cjg-eval-after-load "em-unix"
-  (defun eshell/basename (filename &optional ext)
-    "Return FILENAME sans the directory, if EXT is provided remove
+  ;; this overrides the standard eshell/basename, so we have to be
+  ;; careful about when it is loaded
+  (use-package em-unix
+    :config
+    (defun eshell/basename (filename &optional ext)
+      "Return FILENAME sans the directory, if EXT is provided remove
 the extension EXT from the end of the filename.
 
 Overrides the default eshell/basename with an implementation that
 is closer to GNU basename."
-    (save-match-data
-      (let ((file (file-name-nondirectory filename))
-            regex)
-        (if (and ext
-                 (setq regex (concat (regexp-quote ext) "$"))
-                 (string-match regex file))
-            (substring file 0 (match-beginning 0))
-          file)))))
+      (save-match-data
+        (let ((file (file-name-nondirectory filename))
+              regex)
+          (if (and ext
+                   (setq regex (concat (regexp-quote ext) "$"))
+                   (string-match regex file))
+              (substring file 0 (match-beginning 0))
+            file))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; w3m-mode
-(autoload 'w3m "w3m" "Interface for w3m on Emacs." t)
-(cjg-eval-after-load "w3m"
-  (require 'w3m-search)
-  (add-to-list 'w3m-search-engine-alist 
-               '("search-cpan" 
-                 "http://search.cpan.org/search?query=%s&mode=all"))
-  (add-to-list 'w3m-search-engine-alist 
-               '("google-groups-clpm" 
-                 "http://groups.google.com/groups?hl=en&lr=&ie=ISO-8859-1&q=foo&btnG=Google+Search&meta=group%3Dcomp.lang.perl.misc"))
-  (add-to-list 'w3m-uri-replace-alist 
+(use-package w3m
+  :config
+  (use-package w3m-search
+    :config
+    (add-to-list 'w3m-search-engine-alist
+                 '("search-cpan"
+                   "http://search.cpan.org/search?query=%s&mode=all"))
+    (add-to-list 'w3m-search-engine-alist
+                 '("google-groups-clpm"
+                   "http://groups.google.com/groups?hl=en&lr=&ie=ISO-8859-1&q=foo&btnG=Google+Search&meta=group%3Dcomp.lang.perl.misc")))
+  (add-to-list 'w3m-uri-replace-alist
                '("\\`cpan:" w3m-search-uri-replace "search-cpan"))
-  
+
   (cjg-add-hook w3m-mode-hook
     (w3m-toggle-inline-images t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; table-mode
-(autoload 'table-insert "table" nil t)
+(use-package table)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; calendar-mode
-(cjg-eval-after-load "calendar"
+(use-package calendar
+  :config
   (add-hook 'calendar-initial-window-hook 'calendar-mark-holidays)
   (add-hook 'diary-display-hook 'fancy-diary-display)
   (setq diary-file "~/.diary"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; diary-mode
-(cjg-eval-after-load "diary"
+(use-package diary-lib
+  :config
   (add-hook 'diary-display-hook 'fancy-diary-display)
   (add-hook 'diary-hook 'appt-make-list)
   (setq diary-file "~/.diary"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRAMP
-(cjg-eval-after-load "tramp" 
+(use-package tramp
+  :config
   (setq tramp-default-method "ssh")
-
   ;; shut off backups for remote files
   (add-to-list 'backup-directory-alist
                (cons tramp-file-name-regexp nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember
-(autoload 'remember "remember" nil t)
-(cjg-eval-after-load "remember"
+(use-package remember
+  :config
   (setq remember-annotation-functions '(org-remember-annotation)
         remember-handler-functions '(org-remember-handler))
   (cjg-add-hook remember-mode-hook
@@ -1048,47 +1002,53 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bbdb
-(autoload 'bbdb-insinuate-gnus "bbdb" nil t)
-(cjg-eval-after-load "bbdb"
+(use-package bbdb
+  :config
   (bbdb-initialize 'gnus))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; cfengine
-(autoload 'cfengine-mode "cfengine" nil t)
-(cjg-eval-after-load "cfengine"
+(use-package cfengine
+  :config
   (setq cfengine-indent 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ediff
-(cjg-eval-after-load "ediff"
+(use-package ediff
+  :config
   (setq ediff-window-setup-function 'ediff-setup-windows-plain
         ediff-split-window-function 'split-window-horizontally))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; erc
-(cjg-eval-after-load "erc"
-  (require 'erc-spelling)
+(use-package erc
+  :config
+  (use-package erc-spelling)
   (setq erc-auto-query 'window-noselect))
-(autoload 'erc-select "erc" nil t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; message-mode
-(cjg-eval-after-load "message"
+(use-package message
+  :config
   (cjg-add-hook message-mode-hook
     (cjg-enable 'flyspell-mode
                 'footnote-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; text-mode
-(cjg-add-hook text-mode-hook
-  (cjg-enable 'flyspell-mode
-              'footnote-mode))
+(use-package text-mode
+  :disabled t
+  :config
+  (cjg-add-hook text-mode-hook
+    (cjg-enable 'flyspell-mode
+                'footnote-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; css-mode-simple
-(add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
-(autoload 'css-mode "css-mode-simple" nil t)
-(add-hook 'css-mode-hook 'flyspell-prog-mode)
+(use-package css-mode
+  :mode "\\.css$"
+  :config
+  (add-hook 'css-mode-hook 'flyspell-prog-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mouse-avoidance-mode
@@ -1102,15 +1062,16 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ido
-(cjg-eval-after-load "ido"
+(use-package ido
+  :config
   (setq ido-slow-ftp-host-regexps '(".*")
         ido-enable-flex-matching t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-
-(cjg-eval-after-load "org"
+(use-package org
+  :defer t
+  :config
   (setq org-log-done t
         org-mode-hide-leading-stars t
         org-mode-odd-levels-only t
@@ -1123,19 +1084,22 @@ is closer to GNU basename."
           ("cpan" . "http://search.cpan.org/perldoc?%s")
           ("jira" . "http://jira.be-md.ncbi.nlm.nih.gov/browse/%s"))))
 
-(cjg-eval-after-load "deft"
+(use-package deft
+  :defer t
+  :config
   (setq  deft-text-mode 'org-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; fit-frame
-(cjg-eval-after-load "fit-frame"
+(use-package fit-frame
+  :config
   ;; disable fit-frame
-  (setq fit-frame-inhibit-fitting-flag t)) 
+  (setq fit-frame-inhibit-fitting-flag t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ibuffer
-(autoload 'ibuffer "ibuffer" nil t)
-(cjg-eval-after-load "ibuffer"
+(use-package ibuffer
+  :config
   (require 'ibuf-ext nil t)
   (when (featurep 'ibuf-ext)
     (setq ibuffer-saved-filter-groups '(("default"
@@ -1151,12 +1115,13 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; yaml
-(add-to-list 'auto-mode-alist '("\\.ya?ml" . yaml-mode))
-(autoload 'yaml-mode "yaml-mode")
+(use-package yaml-mode
+  :mode "\\.ya?ml")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; git-gutter
-(when (fboundp 'global-git-gutter-mode)
+(use-package git-gutter
+  :init
   (global-git-gutter-mode t))
 
 
