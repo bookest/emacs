@@ -394,9 +394,10 @@ with flymake."
                                    (file-name-directory buffer-file-name))))
      ,@body))
 
-(cjg-eval-after-load "flymake"
-  (face-spec-set 'flymake-errline '((t (:underline "OrangeRed")))  nil)
-  (face-spec-set 'flymake-warnline '((t (:underline "yellow")))  nil))
+(eval-after-load "flymake"
+  (progn
+    (face-spec-set 'flymake-errline '((t (:underline "OrangeRed")))  nil)
+    (face-spec-set 'flymake-warnline '((t (:underline "yellow")))  nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; font-lock-mode
@@ -843,18 +844,7 @@ Checks if unsaved buffers need to be saved."
   (cjg-add-hook puppet-mode-hook
     (set (make-local-variable 'imenu-generic-expression)
           puppet-imenu-generic-expression)
-    (setq show-trailing-whitespace t))
-
-  (cjg-eval-after-load "flymake"
-    (defun flymake-puppet-init ()
-      (let ((local-file (file-relative-name (flymake-init-create-temp-buffer-copy
-                                             'flymake-create-temp-inplace)
-                                            (file-name-directory buffer-file-name))))
-        `("puppet" ("--color=false --parseonly --ignoreimport" ,local-file))))
-
-    (push '(".+\\.pp$" flymake-puppet-init) flymake-allowed-file-name-masks)
-    (push '("\\(.*\\) at \\([^ \n]+\\):\\([0-9]+\\)$" 2 3 nil 1)
-          flymake-err-line-patterns)))
+    (setq show-trailing-whitespace t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; outline-mode
