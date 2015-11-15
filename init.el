@@ -699,7 +699,7 @@ This is a modified version of something I stole from perlmonks."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ObjC-mode
-(add-to-list 'auto-mode-alist '("\\.m" . objc-mode))
+(add-to-list 'auto-mode-alist '("\\.m$" . objc-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; java-mode
