@@ -446,7 +446,7 @@ with flymake."
                 'abbrev-mode)
 
     (flyspell-prog-mode)
-    (turn-on-eldoc-mode)
+    (eldoc-mode)
 
     (set (make-local-variable 'eldoc-documentation-function)
          'cjg-cperl-eldoc-documentation-function)
@@ -591,7 +591,7 @@ This is a modified version of something I stole from perlmonks."
   :mode "Cask$"
   :config
   (cjg-add-hook emacs-lisp-mode-hook
-    (turn-on-eldoc-mode)
+    (eldoc-mode)
     (flyspell-prog-mode)
     (substitute-pattern-with-unicode "\\<(\\(lambda\\>\\)" 'lambda))
 
@@ -765,7 +765,7 @@ This is a modified version of something I stole from perlmonks."
   (cjg-add-hook python-mode-hook
     (cjg-enable 'abbrev-mode
                 'outline-minor-mode)
-    (turn-on-eldoc-mode)
+    (eldoc-mode)
     (flyspell-prog-mode)
     (substitute-pattern-with-unicode "\\<\\(lambda\\>\\)" 'lambda)
     (add-hook 'before-save-hook
