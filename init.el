@@ -1036,86 +1036,6 @@ is closer to GNU basename."
   (add-to-list 'backup-directory-alist
                (cons tramp-file-name-regexp nil)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                                                               
-;;; jabber-mode                                                                                                                                                
-(autoload 'jabber-connect "jabber" "connect to a jabber server" t)
-(eval-after-load "jabber"
-  '(progn
-     (defface jabber-roster-user-xa
-       '((t (:foreground "pink" :weight normal :slant italic)))
-       "face for displaying extended away users"
-       :group 'jabber-faces)
-     (setq jabber-server "jive.home.nyu.edu"
-           jabber-username "cjg5"
-           jabber-nickname "grim"
-           jabber-connection-type 'ssl)
-     (jabber-activity-mode 1)
-     (jabber-mode-line-mode 1)
-     (add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
-     (add-hook 'jabber-chat-mode-hook 'flyspell-mode)))
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; emacs-wiki
-(autoload 'emacs-wiki-find-file "emacs-wiki" "Visit an Emacs wiki page" t)
-(cjg-eval-after-load "emacs-wiki"
-  (require 'emacs-wiki-srctag)
-  (add-to-list 'emacs-wiki-src-tag-modes-alist 
-               '("perl" . cperl-mode))
-  (add-to-list 'emacs-wiki-src-tag-modes-alist 
-               '("sh" . shell-script-mode))
-  (add-to-list 'emacs-wiki-interwiki-names '("Wiki" . "~/Wiki/default/"))
-  (add-to-list 'emacs-wiki-interwiki-names '("Planner" . "~/Plans/"))
-  (add-to-list 'emacs-wiki-interwiki-names 
-               ;; this should be a function that URL-escapes
-               ;; the passed in tag, so things like
-               ;; [[CPAN#Foo::Bar][Foo::Bar]] work properly.
-               '("CPAN" . "http://search.cpan.org/perldoc?")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; muse
-(cjg-eval-after-load "muse"
-  (require 'muse-wiki)
-  (setq muse-project-alist '(("WikiPlanner" ("~/Plans"
-                                             :default "TaskPool"
-                                             :major-mode planner-mode
-                                             :visit-link planner-visit-link)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; planner-mode
-(autoload 'plan "planner" "Start planning the day." t)
-(autoload 'planner-create-task-from-buffer "planner" 
-  "Create a task based on current buffer" t)
-(autoload 'planner-create-note "planner" 
-  "Create a note on the current days plan" t)
-(cjg-eval-after-load "planner"
-  (require 'planner-diary)
-  (require 'planner-lisp)
-  (require 'planner-gnus)
-  (require 'planner-bbdb)
-  (require 'planner-psvn)
-  (require 'planner-cyclic)
-  (require 'remember-planner)
-  (require 'muse)
-  
-  (setq planner-carry-tasks-forward t
-        planner-use-task-numbers t
-        planner-default-task-priority "B"
-        planner-diary-use-diary t
-        planner-psvn-log-edit-notice-commit-function t
-        planner-psvn-log-edit-include-files-flag nil)
-  
-  (setq planner-day-page-template 
-        "* Tasks\n\n\n* Schedule\n\n\n* Diary\n\n\n* Notes\n\n\n")
-  
-  (planner-diary-insinuate)
-  (planner-calendar-insinuate)
-  (planner-gnus-insinuate)
-    
-  (cjg-add-hook planner-mode-hook
-    (cjg-disable 'flyspell-mode)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember
 (autoload 'remember "remember" nil t)
@@ -1139,42 +1059,10 @@ is closer to GNU basename."
   (setq cfengine-indent 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ratpoison
-(autoload 'ratpoisonrc-mode  "ratpoison" "Major mode for editing ratpoisonrc files." t)
-(autoload 'ratpoison-command "ratpoison" "Send a command to ratpoison." t)
-(autoload 'ratpoison-line    "ratpoison" "Send current line to ratpoison as a command." t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; vc
-(let ((cjg-vc-backends '(("vc-darcs" . DARCS)
-                         ("vc-git"   . GIT))))
-  (dolist (elm cjg-vc-backends)
-    (when (locate-library (car elm))
-      (add-to-list 'vc-handled-backends (cdr elm)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; psvn
-(autoload 'svn-examine "psvn" nil t )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; git
-(autoload 'git-blame-mode "git-blame" "Minor mode for Git incremental blame." t)
-(autoload 'git-status "git" nil t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ediff
 (cjg-eval-after-load "ediff"
   (setq ediff-window-setup-function 'ediff-setup-windows-plain
         ediff-split-window-function 'split-window-horizontally))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; tnt
-(cjg-eval-after-load "tnt"
-  (setq tnt-default-username "bookist"
-        tnt-use-timestamps t
-        tnt-show-inactive-buddies t
-        tnt-show-events-in-mode t))
-(autoload 'tnt-open "tnt" nil t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; erc
@@ -1243,14 +1131,6 @@ is closer to GNU basename."
 (cjg-eval-after-load "fit-frame"
   ;; disable fit-frame
   (setq fit-frame-inhibit-fitting-flag t)) 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; anything
-(autoload 'anything "anything" nil t)
-
-(cjg-eval-after-load "anything"
-  (setq anything-samewindow t)
-  (require 'anything-config nil t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ibuffer
