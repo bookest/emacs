@@ -420,10 +420,6 @@ with flymake."
              cjg-perl-toggle-test-plan
              cjg-perl-increment-test-plan
              cjg-perl-set-test-plan)
-  :bind (("C-c nc" . cjg-perl-insert-no-critic)
-         ("C-c tp" . cjg-perl-toggle-test-plan)
-         ("C-c ip" . cjg-perl-increment-test-plan)
-         ("C-c sp" . cjg-perl-set-test-plan))
   :mode ("\\.t$" "\\.pl$" "\\.pm$")
   :init
   (defalias 'perl-mode 'cperl-mode)
@@ -566,7 +562,13 @@ This is a modified version of something I stole from perlmonks."
       (save-match-data
         (if (cjg-perl-find-test-plan)
             (replace-match (number-to-string arg) nil nil nil 1)
-          (message "no plan"))))))
+          (message "no plan")))))
+
+  (bind-keys :map cperl-mode-map
+             ("C-c nc" . cjg-perl-insert-no-critic)
+             ("C-c tp" . cjg-perl-toggle-test-plan)
+             ("C-c ip" . cjg-perl-increment-test-plan)
+             ("C-c sp" . cjg-perl-set-test-plan)))
 
 (defun perldoc (args)
   "Like man, but use perldoc instead."
@@ -644,7 +646,6 @@ This is a modified version of something I stole from perlmonks."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; C-mode
 (use-package cc-mode
-  :bind ("C-c C-o" . ff-find-other-file)
   :mode ("\\.m$" . objc-mode)
   :config
   (use-package find-file)
@@ -652,6 +653,8 @@ This is a modified version of something I stole from perlmonks."
   (add-to-list 'cc-other-file-alist
                `("\\.h\\'" (,@(cadr (assoc "\\.h\\'" cc-other-file-alist)) ".m")))
   (add-to-list 'cc-other-file-alist '("\\.m\\'" (".h")))
+
+  (bind-key "C-c C-o" ff-find-other-file cc-mode-map)
 
   (defun cjg-guess-c-header-mode ()
     "Guess the proper CC-mode for header files."
