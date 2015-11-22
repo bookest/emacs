@@ -79,37 +79,19 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; global keybindings
-
-(defmacro cjg-define-global-keys (&rest bindings)
-  "Define one or more keybindings in the global map."
-  (declare (indent defun))
-  `(cjg-define-keys (current-global-map) ,@bindings))
-
-(defmacro cjg-define-keys (map &rest bindings)
-  "Define one or more key bindings in MAP."
-  (declare (indent defun))
-  ;;FIXME: keymap should be an uninterned tempvar to avoid name conflict.
-  (let ((keymap map))
-    `(progn
-       ,@(mapcar (lambda (elt)
-                   `(define-key ,keymap (kbd ,(car elt)) ,(cdr elt)))
-                 bindings))))
-
-(cjg-define-global-keys
-  ("C-c o" .  'occur)
-  ("C-c g" . 'goto-line)
-  ("C-c #" . 'comment-or-uncomment-region)
-  ("C-c cc" . 'compile)
-  ("C-x C-b" . 'ibuffer)
-  ("RET" . 'newline-and-indent)
-  ("C-x C-m" . 'execute-extended-command)
-  ("C-c l" . 'org-store-link)
-  ("C-c a" . 'org-agenda)
-  ("C-S-y" . 'clipboard-yank)
-  ("C-S-w" . 'clipboard-kill-region)
-  ("M-W"   . 'clipboard-kill-ring-save)
-  ("<f9>" . 'deft)
-  ("C-x a r" . 'align-regexp))
+(bind-keys ("C-c o" . occur)
+           ("C-c g" . goto-line)
+           ("C-c #" . comment-or-uncomment-region)
+           ("C-c cc" . compile)
+           ("RET" . newline-and-indent)
+           ("C-x C-m" . execute-extended-command)
+           ("C-c l" . org-store-link)
+           ("C-c a" . org-agenda)
+           ("C-S-y" . clipboard-yank)
+           ("C-S-w" . clipboard-kill-region)
+           ("M-W" . clipboard-kill-ring-save)
+           ("<f9>" . deft)
+           ("C-x a r" . align-regexp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general functions
@@ -1061,6 +1043,7 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ibuffer
 (use-package ibuffer
+  :bind ("C-x C-b" . ibuffer)
   :config
   (require 'ibuf-ext nil t)
   (when (featurep 'ibuf-ext)
