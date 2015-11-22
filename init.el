@@ -402,6 +402,14 @@ Makefile or makefile exist in the current directory."
   :config
   (setq-default auto-insert t))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; prog-mode
+(use-package prog-mode
+  :config
+  (add-hook 'prog-mode-hook #'flyspell-prog-mode))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; cperl-mode
 (use-package cperl-mode
@@ -430,8 +438,6 @@ Makefile or makefile exist in the current directory."
     (cjg:cperl-set-compile-command)
     (cjg-enable 'auto-insert-mode
                 'abbrev-mode)
-
-    (flyspell-prog-mode)
     (eldoc-mode)
 
     (set (make-local-variable 'eldoc-documentation-function)
@@ -584,7 +590,6 @@ This is a modified version of something I stole from perlmonks."
   :config
   (cjg-add-hook emacs-lisp-mode-hook
     (eldoc-mode)
-    (flyspell-prog-mode)
     (substitute-pattern-with-unicode "\\<(\\(lambda\\>\\)" 'lambda))
 
   (add-hook 'lisp-interaction-mode-hook 'cjg-emacs-lisp-mode-hook)
@@ -613,8 +618,7 @@ This is a modified version of something I stole from perlmonks."
 
   (cjg-add-hook sh-mode-hook
     (cjg:sh-set-compile-command)
-    (cjg-enable 'abbrev-mode)
-    (flyspell-prog-mode)))
+    (cjg-enable 'abbrev-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -642,7 +646,6 @@ This is a modified version of something I stole from perlmonks."
   (cjg-add-hook c-mode-common-hook
     (setq c-basic-offset 4)
     (cjg-enable 'abbrev-mode)
-    (flyspell-prog-mode)
     (cjg-guess-c-header-mode))
 
   (cjg-define-compile-command cjg:c-set-compile-command
@@ -687,8 +690,7 @@ This is a modified version of something I stole from perlmonks."
   (defalias 'irb 'run-ruby)
   :config
   (cjg-add-hook ruby-mode-hook
-    (cjg-enable 'ruby-electric-mode)
-    (flyspell-prog-mode))
+    (cjg-enable 'ruby-electric-mode))
 
   (setq ruby-insert-encoding-magic-comment nil
         ruby-deep-indent-paren nil
@@ -731,7 +733,6 @@ This is a modified version of something I stole from perlmonks."
     (cjg-enable 'abbrev-mode
                 'outline-minor-mode)
     (eldoc-mode)
-    (flyspell-prog-mode)
     (substitute-pattern-with-unicode "\\<\\(lambda\\>\\)" 'lambda)
     (add-hook 'before-save-hook
               (lambda () (delete-trailing-whitespace (point-min) nil))
@@ -795,8 +796,7 @@ Checks if unsaved buffers need to be saved."
   (cjg-add-hook haskell-mode-hook
     (turn-on-haskell-decl-scan)
     (turn-on-haskell-doc-mode)
-    (turn-on-haskell-indent)
-    (flyspell-prog-mode)))
+    (turn-on-haskell-indent)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; puppet-mode
@@ -999,10 +999,8 @@ is closer to GNU basename."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; css-mode-simple
-(use-package css-mode
-  :mode "\\.css$"
-  :config
-  (add-hook 'css-mode-hook 'flyspell-prog-mode))
+(use-package css-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mouse-avoidance-mode
