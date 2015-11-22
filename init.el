@@ -407,7 +407,8 @@ Makefile or makefile exist in the current directory."
 ;;; prog-mode
 (use-package prog-mode
   :config
-  (add-hook 'prog-mode-hook #'flyspell-prog-mode))
+  (add-hook 'prog-mode-hook #'flyspell-prog-mode)
+  (add-hook 'prog-mode-hook #'(lambda () (setq show-trailing-whitespace t))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -817,8 +818,7 @@ Checks if unsaved buffers need to be saved."
 
   (cjg-add-hook puppet-mode-hook
     (set (make-local-variable 'imenu-generic-expression)
-          puppet-imenu-generic-expression)
-    (setq show-trailing-whitespace t)))
+          puppet-imenu-generic-expression)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; outline-mode
