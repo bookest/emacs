@@ -381,23 +381,12 @@ Makefile or makefile exist in the current directory."
        (set (make-local-variable 'compile-command)
 	    (progn ,@body)))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; flymake
-
-(defmacro cjg-with-flymake-tempfile (var &rest body)
-  "Evaluate BODY with VAR bound to a tempfile suitable for use
-with flymake."
-  (declare (indent 1))
-  `(let ((,var (file-relative-name (flymake-init-create-temp-buffer-copy
-                                    'flymake-create-temp-inplace)
-                                   (file-name-directory buffer-file-name))))
-     ,@body))
-
-(eval-after-load "flymake"
-  (progn
-    (face-spec-set 'flymake-errline '((t (:underline "OrangeRed")))  nil)
-    (face-spec-set 'flymake-warnline '((t (:underline "yellow")))  nil)))
+;;; flycheck
+(use-package flycheck
+  :diminish flycheck-mode
+  :config
+  (global-flycheck-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; font-lock-mode
@@ -622,21 +611,6 @@ This is a modified version of something I stole from perlmonks."
     (concat "bash -n "
             (file-name-nondirectory buffer-file-name)))
 
-  (when (require 'flymake nil t)
-    (defun cjg-shell-flymake-init ()
-      (cjg-with-flymake-tempfile local-file
-        `("bash" ("-n" ,local-file))))
-
-    (defvar cjg-flymake-shell-err-line-pattern
-      '("^\\(.+\\): line \\([0-9]+\\): \\(.+\\)$" 1 2 nil 3))
-
-    (push cjg-flymake-shell-err-line-pattern flymake-err-line-patterns)
-
-    (push '(".+\\.sh$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
-    (push '("bashrc$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
-    (push '("bash_profile$" cjg-shell-flymake-init) flymake-allowed-file-name-masks)
-    (push '("bash_logout$" cjg-shell-flymake-init) flymake-allowed-file-name-masks))
-
   (cjg-add-hook sh-mode-hook
     (cjg:sh-set-compile-command)
     (cjg-enable 'abbrev-mode)
@@ -719,19 +693,6 @@ This is a modified version of something I stole from perlmonks."
   (setq ruby-insert-encoding-magic-comment nil
         ruby-deep-indent-paren nil
         ruby-deep-arglist nil)
-
-  (when (require 'flymake nil t)
-    (defun flymake-ruby-init ()
-      (cjg-with-flymake-tempfile local-file
-        `("ruby" ("-c" ,local-file))))
-
-    (defvar cjg-ruby-flymake-err-line-patterns
-      '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3))
-
-    (push cjg-ruby-flymake-err-line-patterns flymake-err-line-patterns)
-
-    (push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
-    (push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks))
 
   (defun xmp ()
     (interactive)
