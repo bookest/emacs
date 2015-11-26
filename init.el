@@ -330,6 +330,24 @@ Unicode symbol SYMBOL."
                                                (cdr x)))
           patterns))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; color-theme
+(use-package color-theme
+  :config
+  (load-theme 'solarized t))
+
+(defun bookest-toggle-solarized-mode ()
+  "Toggle between solarized light and dark modes."
+  (interactive)
+  (let ((mode (if (equal (frame-parameter nil 'background-mode) 'light)
+                  'dark
+                'light)))
+    (set-frame-parameter nil 'background-mode mode)
+    (set-terminal-parameter nil 'background-mode mode))
+  (enable-theme 'solarized))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mode specific configs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
