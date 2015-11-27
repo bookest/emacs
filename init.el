@@ -23,31 +23,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
+(column-number-mode 1)
+(ido-everywhere 1)
+(ido-mode 1)
+(line-number-mode 1)
+(show-paren-mode 1)
+(which-function-mode 1)
 
-(defun cjg-toggle (arg lst)
-  (dolist (fn lst)
-    (when (fboundp fn)
-      (funcall fn arg))))
-
-(defun cjg-disable (&rest lst)
-  (cjg-toggle -1 lst))
-
-(defun cjg-enable (&rest lst)
-  (cjg-toggle 1 lst))
-
-(cjg-enable 'column-number-mode
-            'line-number-mode
-            'show-paren-mode
-            'ido-mode
-            'ido-everywhere
-            'which-function-mode
-            'partial-completion-mode)
-
-(cjg-disable 'scroll-bar-mode
-             'tool-bar-mode
-             'menu-bar-mode)
-
-(display-time)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(unless (eq window-system 'ns)
+  (menu-bar-mode -1))
 
 (setq visible-bell t
       inhibit-startup-message t
@@ -70,12 +56,11 @@
   "Return true if this Emacs is running on MacOS X."
   (string= system-type "darwin"))
 
-(when (osxp)
-  (setq mac-command-modifier 'meta)
+(setq ns-command-modifier 'meta)
 
-  (when (and (memq window-system '(mac ns))
-             (featurep 'exec-path-from-shell))
-    (exec-path-from-shell-initialize)))
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; global keybindings
