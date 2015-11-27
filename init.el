@@ -1034,7 +1034,8 @@ is closer to GNU basename."
 (use-package deft
   :defer t
   :config
-  (setq  deft-text-mode 'org-mode))
+  (setq  deft-extensions '("org" "md" "txt")
+         deft-use-filename-as-title t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; fit-frame
