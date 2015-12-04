@@ -24,8 +24,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general config
 (column-number-mode 1)
-(ido-everywhere 1)
-(ido-mode 1)
 (line-number-mode 1)
 (show-paren-mode 1)
 (which-function-mode 1)
@@ -1012,7 +1010,9 @@ is closer to GNU basename."
 (use-package ido
   :config
   (setq ido-slow-ftp-host-regexps '(".*")
-        ido-enable-flex-matching t))
+        ido-enable-flex-matching t)
+  (ido-mode 1)
+  (ido-everywhere 1))
 
 (use-package projectile-mode
   :config
