@@ -1014,7 +1014,7 @@ is closer to GNU basename."
   (ido-mode 1)
   (ido-everywhere 1))
 
-(use-package projectile-mode
+(use-package projectile
   :config
   (setq projectile-switch-project-action 'projectile-dired)
   (projectile-global-mode))
