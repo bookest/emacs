@@ -1,20 +1,45 @@
+### https://raw.github.com/github/gitignore/1f65941ef9d32d2b0b9054e66d44b1617b736336/Global/Emacs.gitignore
+
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
 *.elc
+auto-save-list
+tramp
+.\#*
 
-auto-save-list/*
-history
-server/*
+# Org-mode
+.org-id-locations
+*_archive
 
-.cask/*
-elpa/*
-async-bytecomp.log
+# flymake-mode
+*_flymake.*
 
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# elpa packages
+/elpa/
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+
+# cask packages
+.cask/
+
+### Mine
+
+# abbreviations should be defined in elisp
 abbrev_defs
 
-url/cookies
-
-eshell/lastdir
-eshell/history
-
+# ido cache/history
 ido.last
 
+# projectile project list
 projectile-bookmarks.eld
