@@ -1014,6 +1014,11 @@ is closer to GNU basename."
   (setq ido-slow-ftp-host-regexps '(".*")
         ido-enable-flex-matching t))
 
+(use-package projectile-mode
+  :config
+  (setq projectile-switch-project-action 'projectile-dired)
+  (projectile-global-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode
 (use-package org

@@ -1,6 +1,7 @@
 (source gnu)
 (source melpa)
 
+(depends-on "ag")
 (depends-on "async")
 (depends-on "auto-compile")
 (depends-on "auto-complete")
@@ -43,6 +44,7 @@
 (depends-on "pkg-info")
 (depends-on "popup")
 (depends-on "prodigy")
+(depends-on "projectile")
 (depends-on "puppet-mode")
 (depends-on "python-environment")
 (depends-on "rbenv")
