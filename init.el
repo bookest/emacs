@@ -713,14 +713,10 @@ This is a modified version of something I stole from perlmonks."
 ;;; python-mode
 (use-package python
   :config
-  (cjg-add-hook python-mode-hook
-    (cjg-enable 'abbrev-mode
-                'outline-minor-mode)
-    (eldoc-mode)
-    (substitute-pattern-with-unicode "\\<\\(lambda\\>\\)" 'lambda)
-    (add-hook 'before-save-hook
-              (lambda () (delete-trailing-whitespace (point-min) nil))
-              t t))
+  (add-hook 'python-mode-hook #'abbrev-mode)
+  (add-hook 'python-mode-hook #'outline-minor-mode)
+  (add-hook 'python-mode-hook #'eldoc-mode)
+  (add-hook 'before-save-hook #'delete-trailing-whitespace t t)
 
   (defun pylint ()
     "Run pylint against the file visited by the current buffer.
