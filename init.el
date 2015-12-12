@@ -1026,6 +1026,7 @@ is closer to GNU basename."
   (ido-everywhere 1))
 
 (use-package projectile
+  :diminish projectile-mode
   :config
   (setq projectile-switch-project-action 'projectile-dired)
   (projectile-global-mode))
