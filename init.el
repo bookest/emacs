@@ -35,8 +35,7 @@
 
 (setq visible-bell t
       inhibit-startup-message t
-      custom-file "~/.emacs.d/custom.el"
-      custom-buffer-done-function 'kill-buffer)
+      custom-file "~/.emacs.d/custom.el")
 
 (setq backup-by-copying t
       backup-directory-alist '(("." . "~/.backups"))
@@ -412,7 +411,6 @@ Makefile or makefile exist in the current directory."
   (setq cperl-electric-keywords nil
         cperl-electric-parens nil
         cperl-invalid-face nil
-        cperl-under-as-char t
         cperl-indent-level 2
         cperl-indent-parens-as-block t
         cperl-close-paren-offset -2
@@ -620,7 +618,7 @@ This is a modified version of something I stole from perlmonks."
                `("\\.h\\'" (,@(cadr (assoc "\\.h\\'" cc-other-file-alist)) ".m")))
   (add-to-list 'cc-other-file-alist '("\\.m\\'" (".h")))
 
-  (bind-key "C-c C-o" ff-find-other-file cc-mode-map)
+  (bind-key "C-c C-o" #'ff-find-other-file c-mode-base-map)
 
   (defun cjg-guess-c-header-mode ()
     "Guess the proper CC-mode for header files."
