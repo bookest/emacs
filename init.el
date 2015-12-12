@@ -791,6 +791,11 @@ Checks if unsaved buffers need to be saved."
   (add-hook 'haskell-mode-hook #'haskell-doc-mode)
   (add-hook 'haskell-mode-hook #'haskell-auto-insert-module-template))
 
+(use-package haskell-cabal
+  :config
+  (bind-keys :map haskell-cabal-mode-map
+             ("C-`" . haskell-interactive-bring)
+             ("C-c C-z" . haskell-interactive-switch)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; puppet-mode
