@@ -680,27 +680,7 @@ This is a modified version of something I stole from perlmonks."
 
   (setq ruby-insert-encoding-magic-comment nil
         ruby-deep-indent-paren nil
-        ruby-deep-arglist nil)
-
-  (defun xmp ()
-    (interactive)
-    (let ((line (current-line))
-          (col  (current-column)))
-      (shell-command-on-region 1 (point-max) (xmp-command) t t)
-      (goto-line line)
-      (move-to-column col)))
-
-  (defun xmp-command ()
-    (cond ((save-excursion
-             (goto-char 1)
-             (search-forward "< Test::Unit::TestCase" nil t))
-           "ruby -S xmpfilter.rb --unittest")
-          ((save-excursion
-             (goto-char 1)
-             (re-search-forward "^context.+do$" nil t))
-           "ruby -S xmpfilter.rb --spec")
-          (t
-           "ruby -S xmpfilter.rb"))))
+        ruby-deep-arglist nil))
 
 (use-package inf-ruby :init (defalias 'irb 'rub-ruby))
 (use-package ruby-electric
