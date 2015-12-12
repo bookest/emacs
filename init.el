@@ -335,6 +335,10 @@ Unicode symbol SYMBOL."
 ;;; mode specific configs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(use-package company
+  :diminish company-mode
+  :config (global-company-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; the island of lost modes
 (use-package executable
@@ -715,6 +719,7 @@ This is a modified version of something I stole from perlmonks."
   :config
   (add-hook 'python-mode-hook #'abbrev-mode)
   (add-hook 'python-mode-hook #'outline-minor-mode)
+  (add-hook 'python-mode-hook #'anaconda-mode)
   (add-hook 'python-mode-hook #'eldoc-mode)
   (add-hook 'before-save-hook #'delete-trailing-whitespace t t)
 
@@ -768,6 +773,11 @@ Checks if unsaved buffers need to be saved."
     ("__n" "__name__")
     ("__m" "__main__")
     ("ifm" "if __name__ == '__main__':")))
+
+(use-package anaconda-mode :defer t :diminish anaconda-mode)
+(use-package company-anaconda
+  :defer t
+  :config (add-to-list 'company-backends 'company-anaconda))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; haskell-mode

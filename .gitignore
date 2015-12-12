@@ -43,3 +43,6 @@ ido.last
 
 # projectile project list
 projectile-bookmarks.eld
+
+# Python modules installed by anaconda-mode
+anaconda-mode/

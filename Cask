@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "ag")
+(depends-on "anaconda-mode")
 (depends-on "async")
 (depends-on "auto-compile")
 (depends-on "auto-complete")
@@ -11,6 +12,7 @@
 (depends-on "color-theme")
 (depends-on "color-theme-solarized")
 (depends-on "company")
+(depends-on "company-anaconda")
 (depends-on "concurrent")
 (depends-on "ctable")
 (depends-on "dash")
