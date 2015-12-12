@@ -32,6 +32,7 @@
 (depends-on "haskell-mode")
 (depends-on "helm")
 (depends-on "helm-core")
+(depends-on "ibuffer-projectile")
 (depends-on "inf-ruby")
 (depends-on "jedi")
 (depends-on "jedi-core")

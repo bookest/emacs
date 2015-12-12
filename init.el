@@ -1005,18 +1005,8 @@ is closer to GNU basename."
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)
   :config
-  (require 'ibuf-ext nil t)
-  (when (featurep 'ibuf-ext)
-    (setq ibuffer-saved-filter-groups '(("default"
-                                         ("org" (mode . org-mode))
-                                         ("gnus" (or
-                                                  (mode . message-mode)
-                                                  (mode . mail-mode)
-                                                  (mode . gnus-group-mode)
-                                                  (mode . gnus-summary-mode)
-                                                  (mode . gnus-article-mode))))))
-    (cjg-add-hook ibuffer-mode-hook
-      (ibuffer-switch-to-saved-filter-groups "default"))))
+  (use-package ibuffer-projectile)
+  (add-hook 'ibuffer-hook #'ibuffer-projectile-set-filter-groups))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; yaml
