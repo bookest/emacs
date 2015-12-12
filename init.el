@@ -1037,16 +1037,10 @@ is closer to GNU basename."
   :defer t
   :config
   (setq org-log-done t
-        org-mode-hide-leading-stars t
-        org-mode-odd-levels-only t
+        org-startup-indented t
         org-return-follows-link t
         org-directory "~/Documents/org/"
-        org-default-notes-file (concat org-directory "notes.org"))
-  (setq org-link-abbrev-alist
-        '(("org" . "file:~/Documents/org/")
-          ("rt" . "https://rt3.be-md.ncbi.nlm.nih.gov/rt3/Ticket/Display.html?id=%s")
-          ("cpan" . "http://search.cpan.org/perldoc?%s")
-          ("jira" . "http://jira.be-md.ncbi.nlm.nih.gov/browse/%s"))))
+        org-default-notes-file (concat org-directory "notes.org")))
 
 (use-package deft
   :defer t
