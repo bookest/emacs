@@ -782,17 +782,6 @@ Checks if unsaved buffers need to be saved."
              ("C-c C-z" . haskell-interactive-switch)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; puppet-mode
-(use-package puppet-mode
-  :config
-  (setq puppet-imenu-generic-expression
-        '((nil "^\\s-*\\(?:class\\|define\\|node\\)\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\(?:::\\(?:\\sw\\|\\s_\\)+\\)*\\)" 1)))
-
-  (cjg-add-hook puppet-mode-hook
-    (set (make-local-variable 'imenu-generic-expression)
-          puppet-imenu-generic-expression)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; outline-mode
 (use-package outline)
 
