@@ -857,7 +857,7 @@ eshell/man. Taken from EmacsWiki."
           (let* ((line (string-to-number (match-string 1 (pop args))))
                  (file (pop args)))
             (find-file file)
-            (goto-line line))
+            (forward-line (- line 1)))
         (find-file (pop args)))))
 
   ;; this overrides the standard eshell/basename, so we have to be
