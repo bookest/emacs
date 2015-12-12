@@ -795,7 +795,10 @@ Checks if unsaved buffers need to be saved."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; eshell
 (use-package eshell
+  :defer t
   :config
+  (use-package em-prompt :defer t)
+  (use-package em-cmpl :defer t)
   (setq eshell-prompt-function 'cjg-eshell-mildly-fancy-prompt
         eshell-prompt-regexp "^[^#>\n]* [#>] "
         eshell-cp-interactive-query t
