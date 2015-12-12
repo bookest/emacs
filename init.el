@@ -880,24 +880,6 @@ is closer to GNU basename."
             file))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; w3m-mode
-(use-package w3m
-  :config
-  (use-package w3m-search
-    :config
-    (add-to-list 'w3m-search-engine-alist
-                 '("search-cpan"
-                   "http://search.cpan.org/search?query=%s&mode=all"))
-    (add-to-list 'w3m-search-engine-alist
-                 '("google-groups-clpm"
-                   "http://groups.google.com/groups?hl=en&lr=&ie=ISO-8859-1&q=foo&btnG=Google+Search&meta=group%3Dcomp.lang.perl.misc")))
-  (add-to-list 'w3m-uri-replace-alist
-               '("\\`cpan:" w3m-search-uri-replace "search-cpan"))
-
-  (cjg-add-hook w3m-mode-hook
-    (w3m-toggle-inline-images t)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; table-mode
 (use-package table)
 
