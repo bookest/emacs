@@ -1001,13 +1001,6 @@ is closer to GNU basename."
          deft-use-filename-as-title t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; fit-frame
-(use-package fit-frame
-  :config
-  ;; disable fit-frame
-  (setq fit-frame-inhibit-fitting-flag t))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ibuffer
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)
