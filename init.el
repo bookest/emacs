@@ -353,20 +353,6 @@ Unicode symbol SYMBOL."
 ;;; compile-mode
 (require 'compile)
 
-(defmacro cjg-define-compile-command (name &rest body)
-  "Define NAME as a function that sets COMPILE-COMMAND.
-
-COMPILE-COMMAND is set to the results of evaluating
-BODY. COMPILE-COMMAND will be the default if a file named
-Makefile or makefile exist in the current directory."
-  (declare (indent defun))
-  `(defun ,name ()
-     (unless (or (null buffer-file-name)
-		 (file-exists-p "Makefile")
-		 (file-exists-p "makefile"))
-       (set (make-local-variable 'compile-command)
-	    (progn ,@body)))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; flycheck
 (use-package flycheck
@@ -416,12 +402,7 @@ Makefile or makefile exist in the current directory."
         cperl-close-paren-offset -2
         cperl-label-offset 0)
 
-  (cjg-define-compile-command cjg:cperl-set-compile-command
-    (concat "perl -cw "
-            (file-name-nondirectory buffer-file-name)))
-
   (cjg-add-hook cperl-mode-hook
-    (cjg:cperl-set-compile-command)
     (auto-insert-mode)
     (abbrev-mode)
     (eldoc-mode)
@@ -598,12 +579,7 @@ This is a modified version of something I stole from perlmonks."
   :config
   (setq sh-basic-offset 4)
 
-  (cjg-define-compile-command cjg:sh-set-compile-command
-    (concat "bash -n "
-            (file-name-nondirectory buffer-file-name)))
-
   (cjg-add-hook sh-mode-hook
-    (cjg:sh-set-compile-command)
     (abbrev-mode)))
 
 
@@ -634,25 +610,8 @@ This is a modified version of something I stole from perlmonks."
     (abbrev-mode)
     (cjg-guess-c-header-mode))
 
-  (cjg-define-compile-command cjg:c-set-compile-command
-    (let ((file (file-name-nondirectory buffer-file-name)))
-      (concat "gcc -g -Wall -o "
-              (file-name-sans-extension file)
-              " "
-              file)))
-
   (cjg-add-hook c-mode-hook
-    (setq c-basic-offset 8)
-    (cjg:c-set-compile-command))
-
-  (cjg-define-compile-command cjg:c++-set-compile-command
-    (let ((file (file-name-nondirectory buffer-file-name)))
-      (concat "g++ -g -Wall -o "
-              (file-name-sans-extension file)
-              " "
-              file)))
-
-  (cjg-add-hook c++-mode-hook (cjg:c++-set-compile-command))
+    (setq c-basic-offset 8))
 
   (cjg-add-hook java-mode-hook
     ;; fix indentation for anonymous classes.
