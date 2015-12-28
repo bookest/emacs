@@ -163,15 +163,6 @@ Stolen and modified from the original version found at
                    `(define-abbrev ,table ,@elt))
                  abbrevs))))
 
-(defmacro cjg-add-hook (hook &rest body)
-  (declare (indent defun))
-  (let ((fun (intern (concat "cjg-"
-                             (symbol-name hook)))))
-    `(progn
-       (defun ,fun ()
-         (progn ,@body))
-       (add-hook ',hook ',fun))))
-
 (defun cjg-term ()
   "Spawn a new terminal.
 
@@ -402,21 +393,18 @@ Unicode symbol SYMBOL."
         cperl-close-paren-offset -2
         cperl-label-offset 0)
 
-  (cjg-add-hook cperl-mode-hook
-    (auto-insert-mode)
-    (abbrev-mode)
-    (eldoc-mode)
-
-    (set (make-local-variable 'eldoc-documentation-function)
-         'cjg-cperl-eldoc-documentation-function)
-
-    (cjg-define-abbrevs local-abbrev-table
-      ("__p" "__PACKAGE__")
-      ("__d" "__DATA__")
-      ("__e" "__END__")
-      ("dbg" "" 'perl-debug-skeleton)
-      ("subm" "" 'perl-method-skeleton)
-      ("hasm" "" 'moose-has-skeleton)))
+  (add-hook 'cperl-mode-hook #'auto-insert-mode)
+  (add-hook 'cperl-mode-hook #'abbrev-mode)
+  (add-hook 'cperl-mode-hook #'eldoc-mode)
+  (add-hook 'cperl-mode-hook #'(lambda () (set (make-local-variable 'eldoc-documentation-function)
+                                               'cjg-cperl-eldoc-documentation-function)))
+  (add-hook 'cperl-mode-hook #'(cjg-define-abbrevs local-abbrev-table
+                                       ("__p" "__PACKAGE__")
+                                       ("__d" "__DATA__")
+                                       ("__e" "__END__")
+                                       ("dbg" "" 'perl-debug-skeleton)
+                                       ("subm" "" 'perl-method-skeleton)
+                                       ("hasm" "" 'moose-has-skeleton)))
 
   (define-skeleton perl-module-skeleton
     "Inserts a skeleton Perl module into the current buffer."
@@ -555,12 +543,9 @@ This is a modified version of something I stole from perlmonks."
 (use-package emacs-lisp-mode
   :mode "Cask$"
   :config
-  (cjg-add-hook emacs-lisp-mode-hook
-    (eldoc-mode)
-    (substitute-pattern-with-unicode "\\<(\\(lambda\\>\\)" 'lambda))
-
-  (add-hook 'lisp-interaction-mode-hook 'cjg-emacs-lisp-mode-hook)
-  (add-hook 'ielm-mode-hook 'cjg-emacs-lisp-mode-hook)
+  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+  (add-hook 'lisp-interaction-mode-hook #'eldoc-mode)
+  (add-hook 'ielm-mode-hook #'eldoc-mode)
 
   (defun cjg-unintern-symbol-at-point ()
     "Unintern the symbol at point."
@@ -578,9 +563,7 @@ This is a modified version of something I stole from perlmonks."
 (use-package sh-script
   :config
   (setq sh-basic-offset 4)
-
-  (cjg-add-hook sh-mode-hook
-    (abbrev-mode)))
+  (add-hook 'sh-mode-hook #'abbrev-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -605,17 +588,14 @@ This is a modified version of something I stole from perlmonks."
           (when (replace-match ".m" t t name)
             (objc-mode))))))
 
-  (cjg-add-hook c-mode-common-hook
-    (setq c-basic-offset 4)
-    (abbrev-mode)
-    (cjg-guess-c-header-mode))
+  (add-hook 'c-mode-common-hook #'abbrev-mode)
+  (add-hook 'c-mode-common-hook #'(lambda () (setq c-basic-offset 4)))
+  (add-hook 'c-mode-common-hook #'cjg-guess-c-header-mode)
 
-  (cjg-add-hook c-mode-hook
-    (setq c-basic-offset 8))
+  (add-hook 'c-mode-hook #'(lambda () (setq c-basic-offset 8)))
 
-  (cjg-add-hook java-mode-hook
-    ;; fix indentation for anonymous classes.
-    (c-set-offset 'inexpr-class 0)))
+  (add-hook 'java-mode-hook #'(lambda () (c-set-offset 'inexpr-class 0))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ruby-mode
@@ -634,8 +614,7 @@ This is a modified version of something I stole from perlmonks."
   :init
   (defalias 'irb 'run-ruby)
   :config
-  (cjg-add-hook ruby-mode-hook
-    (ruby-electric-mode))
+  (add-hook 'ruby-mode-hook #'ruby-electric-mode)
 
   (setq ruby-insert-encoding-magic-comment nil
         ruby-deep-indent-paren nil
@@ -783,9 +762,8 @@ Checks if unsaved buffers need to be saved."
 Adds the display of the current time in 24 hour format."
     (concat (format-time-string "{%T}") (cjg-eshell-simple-prompt)))
 
-  (cjg-add-hook eshell-mode-hook
-    (add-to-list 'eshell-output-filter-functions
-                 'eshell-postoutput-scroll-to-bottom))
+  (add-hook 'eshell-mode-hook #'eshell-output-filter-functions)
+  (add-hook 'eshell-mode-hook #'eshell-postoutput-scroll-to-bottom)
 
   ;; handle ASCII control codes
   (add-hook 'eshell-preoutput-filter-functions 'ansi-color-apply)
@@ -865,9 +843,8 @@ is closer to GNU basename."
   :config
   (setq remember-annotation-functions '(org-remember-annotation)
         remember-handler-functions '(org-remember-handler))
-  (cjg-add-hook remember-mode-hook
-    (flyspell-mode)
-    (org-remember-apply-template)))
+  (add-hook 'remember-mode-hook #'flyspell-mode)
+  (add-hook 'remember-mode-hook #'org-remember-apply-template))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bbdb
@@ -899,18 +876,18 @@ is closer to GNU basename."
 ;;; message-mode
 (use-package message
   :config
-  (cjg-add-hook message-mode-hook
-    (flyspell-mode)
-    (footnote-mode)))
+  (add-hook 'message-mode-hook #'flyspell-mode)
+  (add-hook 'message-mode-hook #'footnote-mode))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; text-mode
 (use-package text-mode
   :disabled t
   :config
-  (cjg-add-hook text-mode-hook
-    (flyspell-mode)
-    (footnote-mode)))
+  (add-hook 'text-mode-hook #'flyspell-mode)
+  (add-hook 'text-mode-hook #'footnote-mode))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; css-mode-simple
