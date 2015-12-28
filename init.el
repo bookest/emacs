@@ -422,8 +422,8 @@ Makefile or makefile exist in the current directory."
 
   (cjg-add-hook cperl-mode-hook
     (cjg:cperl-set-compile-command)
-    (cjg-enable 'auto-insert-mode
-                'abbrev-mode)
+    (auto-insert-mode)
+    (abbrev-mode)
     (eldoc-mode)
 
     (set (make-local-variable 'eldoc-documentation-function)
@@ -604,7 +604,7 @@ This is a modified version of something I stole from perlmonks."
 
   (cjg-add-hook sh-mode-hook
     (cjg:sh-set-compile-command)
-    (cjg-enable 'abbrev-mode)))
+    (abbrev-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -631,7 +631,7 @@ This is a modified version of something I stole from perlmonks."
 
   (cjg-add-hook c-mode-common-hook
     (setq c-basic-offset 4)
-    (cjg-enable 'abbrev-mode)
+    (abbrev-mode)
     (cjg-guess-c-header-mode))
 
   (cjg-define-compile-command cjg:c-set-compile-command
@@ -676,7 +676,7 @@ This is a modified version of something I stole from perlmonks."
   (defalias 'irb 'run-ruby)
   :config
   (cjg-add-hook ruby-mode-hook
-    (cjg-enable 'ruby-electric-mode))
+    (ruby-electric-mode))
 
   (setq ruby-insert-encoding-magic-comment nil
         ruby-deep-indent-paren nil
@@ -907,7 +907,7 @@ is closer to GNU basename."
   (setq remember-annotation-functions '(org-remember-annotation)
         remember-handler-functions '(org-remember-handler))
   (cjg-add-hook remember-mode-hook
-    (cjg-enable 'flyspell-mode)
+    (flyspell-mode)
     (org-remember-apply-template)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -941,8 +941,8 @@ is closer to GNU basename."
 (use-package message
   :config
   (cjg-add-hook message-mode-hook
-    (cjg-enable 'flyspell-mode
-                'footnote-mode)))
+    (flyspell-mode)
+    (footnote-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; text-mode
@@ -950,8 +950,8 @@ is closer to GNU basename."
   :disabled t
   :config
   (cjg-add-hook text-mode-hook
-    (cjg-enable 'flyspell-mode
-                'footnote-mode)))
+    (flyspell-mode)
+    (footnote-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; css-mode-simple
