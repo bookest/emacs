@@ -60,6 +60,7 @@
 (depends-on "sbt-mode")
 (depends-on "scala-mode2")
 (depends-on "shut-up")
+(depends-on "sphinx-doc")
 (depends-on "sr-speedbar")
 (depends-on "use-package")
 (depends-on "virtualenv")

@@ -637,6 +637,7 @@ This is a modified version of something I stole from perlmonks."
   (add-hook 'python-mode-hook #'outline-minor-mode)
   (add-hook 'python-mode-hook #'anaconda-mode)
   (add-hook 'python-mode-hook #'eldoc-mode)
+  (add-hook 'python-mode-hook #'sphinx-doc-mode)
   (add-hook 'before-save-hook #'delete-trailing-whitespace t t)
 
   (defun pylint ()
@@ -694,6 +695,8 @@ Checks if unsaved buffers need to be saved."
 (use-package company-anaconda
   :defer t
   :config (add-to-list 'company-backends 'company-anaconda))
+
+(use-package sphinx-doc :defer t :diminish sphinx-doc-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; haskell-mode
