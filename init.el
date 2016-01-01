@@ -936,6 +936,15 @@ is closer to GNU basename."
   (setq  deft-extensions '("org" "md" "txt")
          deft-use-filename-as-title t))
 
+(use-package org-projectile
+  :bind (("C-c n p" . org-projectile:project-todo-completing-read)
+         ("C-c c" . org-capture))
+  :config
+  (progn
+    (setq org-projectile:projects-file (expand-file-name "~/Documents/org/projects.org")
+          org-agenda-files (append org-agenda-files (org-projectile:todo-files)))
+    (add-to-list 'org-capture-templates (org-projectile:project-todo-entry "p"))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ibuffer
 (use-package ibuffer

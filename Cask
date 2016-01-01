@@ -41,6 +41,7 @@
 (depends-on "magit-popup")
 (depends-on "markdown-mode")
 (depends-on "nav")
+(depends-on "org-projectile")
 (depends-on "package-build")
 (depends-on "packed")
 (depends-on "pallet")
