@@ -722,6 +722,21 @@ Checks if unsaved buffers need to be saved."
              ("C-`" . haskell-interactive-bring)
              ("C-c C-z" . haskell-interactive-switch)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; go-mode
+(use-package go-mode
+  :mode "\\.go$"
+  :config
+  (use-package go-eldoc :demand t)
+  (use-package company-go :demand t)
+
+  (add-hook 'before-save-hook #'gofmt-before-save)
+  (add-hook 'go-mode-hook #'go-eldoc-setup)
+
+  (bind-keys :map go-mode-map
+             ("M-." . godef-jump)
+             ("C-x 4 ." . godef-jump-other-window)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; outline-mode
 (use-package outline)
