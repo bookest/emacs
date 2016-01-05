@@ -3,6 +3,7 @@
 
 (depends-on "ag")
 (depends-on "anaconda-mode")
+(depends-on "ansible-doc")
 (depends-on "async")
 (depends-on "auto-compile")
 (depends-on "auto-complete")
@@ -13,6 +14,7 @@
 (depends-on "color-theme-solarized")
 (depends-on "company")
 (depends-on "company-anaconda")
+(depends-on "company-ansible")
 (depends-on "company-go")
 (depends-on "concurrent")
 (depends-on "ctable")

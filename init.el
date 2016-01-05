@@ -974,7 +974,14 @@ is closer to GNU basename."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; yaml
 (use-package yaml-mode
-  :mode "\\.ya?ml")
+  :mode "\\.ya?ml"
+  :config
+  (use-package ansible-doc :demand t :diminish ansible-doc-mode)
+  (use-package company-ansible :demand t)
+  (add-to-list 'company-backends 'company-ansible)
+
+  (add-hook 'yaml-mode-hook #'ansible-doc-mode)
+  (add-hook 'yaml-mode-hook #'(lambda () (run-hooks prog-mode-hook))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; git-gutter
