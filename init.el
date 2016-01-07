@@ -989,7 +989,8 @@ is closer to GNU basename."
 ;;; git-gutter
 (use-package git-gutter
   :diminish git-gutter-mode
-  :init
+  :demand t
+  :config
   (global-git-gutter-mode t))
 
 
