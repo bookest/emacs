@@ -727,6 +727,8 @@ Checks if unsaved buffers need to be saved."
 (use-package go-mode
   :mode "\\.go$"
   :config
+  (exec-path-from-shell-copy-env "GOPATH")
+
   (use-package go-eldoc :demand t)
   (use-package company-go :demand t)
 
