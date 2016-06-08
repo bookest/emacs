@@ -54,6 +54,7 @@
 (depends-on "pallet")
 (depends-on "pkg-info")
 (depends-on "popup")
+(depends-on "powershell")
 (depends-on "prodigy")
 (depends-on "projectile")
 (depends-on "puppet-mode")
