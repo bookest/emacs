@@ -39,6 +39,7 @@
 (depends-on "helm-core")
 (depends-on "ibuffer-projectile")
 (depends-on "inf-ruby")
+(depends-on "intero")
 (depends-on "jedi")
 (depends-on "jedi-core")
 (depends-on "let-alist")

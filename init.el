@@ -702,25 +702,15 @@ Checks if unsaved buffers need to be saved."
 ;;; haskell-mode
 (use-package haskell-mode
   :config
-  (bind-keys :map haskell-mode-map
-             ("C-`"     . haskell-interactive-bring)
-             ("C-c C-k" . haskell-process-clear)
-             ("C-c C-z" . haskell-interactive-switch)
-             ("C-c C-l" . haskell-process-load-or-reload)
-             ("C-c C-t" . haskell-process-do-type)
-             ("C-c C-i" . haskell-process-do-info)
-             ("SPC"     . haskell-mode-contextual-space))
-
   (add-hook 'haskell-mode-hook #'haskell-indentation-mode)
   (add-hook 'haskell-mode-hook #'haskell-decl-scan-mode)
-  (add-hook 'haskell-mode-hook #'haskell-doc-mode)
-  (add-hook 'haskell-mode-hook #'haskell-auto-insert-module-template))
+  (add-hook 'haskell-mode-hook #'haskell-auto-insert-module-template)
+  (add-hook 'haskell-mode-hook #'intero-mode)
+  (add-hook 'haskell-mode-hook #'eldoc-mode))
 
-(use-package haskell-cabal
-  :config
-  (bind-keys :map haskell-cabal-mode-map
-             ("C-`" . haskell-interactive-bring)
-             ("C-c C-z" . haskell-interactive-switch)))
+(use-package intero :defer t)
+
+(use-package haskell-cabal :mode "\\.cabal$")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; go-mode
