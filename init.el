@@ -780,8 +780,13 @@ Adds the display of the current time in 24 hour format."
 
   (defun eshell/clear nil
     "Emulate the shell command clear in lisp"
+    (interactive)
     (let ((eshell-buffer-maximum-lines 0))
       (eshell-truncate-buffer)))
+
+  ;; We have to add this binding here because eshell-mode-map is
+  ;; buffer local (WTF?).
+  (add-hook 'eshell-mode-hook #'(lambda () (bind-key "C-l" eshell/clear eshell-mode-map)))
 
   (defun eshell/perldoc (&rest args)
     "Browse Perl documentation in Pod format. Similar to
