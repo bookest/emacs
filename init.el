@@ -537,11 +537,6 @@ This is a modified version of something I stole from perlmonks."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; tt-mode
-(use-package tt-mode :mode "\\.tt$")
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; emacs-lisp-mode
 (use-package emacs-lisp-mode
   :mode "Cask$"
