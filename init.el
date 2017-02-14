@@ -5,6 +5,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Bootstrap cask
+
+(package-initialize)
+
 (eval-and-compile
   (require 'cask (expand-file-name "~/.cask/cask.el"))
   (cask-initialize (getenv "TRAVIS_BUILD_DIR")))
