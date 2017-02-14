@@ -58,6 +58,7 @@
 (depends-on "powershell")
 (depends-on "prodigy")
 (depends-on "projectile")
+(depends-on "protobuf-mode")
 (depends-on "puppet-mode")
 (depends-on "python-environment")
 (depends-on "rbenv")
