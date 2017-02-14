@@ -66,7 +66,7 @@
 (depends-on "ruby-test-mode")
 (depends-on "s")
 (depends-on "sbt-mode")
-(depends-on "scala-mode2")
+(depends-on "scala-mode")
 (depends-on "shut-up")
 (depends-on "sphinx-doc")
 (depends-on "sr-speedbar")
