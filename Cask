@@ -29,6 +29,7 @@
 (depends-on "exec-path-from-shell")
 (depends-on "f")
 (depends-on "flycheck")
+(depends-on "flymd")
 (depends-on "full-ack")
 (depends-on "git-commit")
 (depends-on "git-gutter")
