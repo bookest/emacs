@@ -759,7 +759,7 @@ Checks if unsaved buffers need to be saved."
   (defun cjg-eshell-simple-prompt ()
     "A simple [user@host] pwd > prompt for eshell."
     (concat "[" user-login-name "@"
-            (car (split-string system-name "\\.")) "] "
+            (car (split-string (system-name) "\\.")) "] "
             (eshell/pwd)
             (if (= (user-uid) 0)
                 " # "
