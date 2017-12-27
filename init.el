@@ -720,6 +720,8 @@ Checks if unsaved buffers need to be saved."
   (use-package go-eldoc :demand t)
   (use-package company-go :demand t)
 
+  (setq gofmt-command "goimports")
+
   (add-hook 'before-save-hook #'gofmt-before-save)
   (add-hook 'go-mode-hook #'go-eldoc-setup)
 
