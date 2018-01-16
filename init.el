@@ -719,11 +719,13 @@ Checks if unsaved buffers need to be saved."
 
   (use-package go-eldoc :demand t)
   (use-package company-go :demand t)
+  (use-package go-guru :demand t)
 
   (setq gofmt-command "goimports")
 
   (add-hook 'before-save-hook #'gofmt-before-save)
   (add-hook 'go-mode-hook #'go-eldoc-setup)
+  (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
 
   (bind-keys :map go-mode-map
              ("M-." . godef-jump)
